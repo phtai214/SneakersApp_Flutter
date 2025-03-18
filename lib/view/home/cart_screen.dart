@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 
@@ -246,10 +247,7 @@ class _CartScreenState extends State<CartScreen> {
                                       color: Color(0xff707B81),
                                       fontSize: 16),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.47,
-                                ),
+                                Spacer(),
                                 Text(
                                   r'$' + cart.calculateTotalPrice().toString(),
                                   style: const TextStyle(
@@ -276,10 +274,7 @@ class _CartScreenState extends State<CartScreen> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.55,
-                                ),
+                                Spacer(),
                                 const Text(
                                   '0',
                                   style: TextStyle(
@@ -307,10 +302,7 @@ class _CartScreenState extends State<CartScreen> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.42,
-                                ),
+                                Spacer(),
                                 Text(
                                   r'$' + cart.calculateTotalPrice().toString(),
                                   style: const TextStyle(

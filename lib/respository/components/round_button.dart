@@ -48,7 +48,7 @@ class RoundButtonTwo extends StatelessWidget {
       onTap: onpress,
       child: Container(
         height: 50,
-        width: 335,
+        width: MediaQuery.sizeOf(context).width,
         decoration: const BoxDecoration(
           color: AppColor.buttonColorTwo,
           borderRadius: BorderRadius.all(

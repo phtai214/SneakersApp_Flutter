@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/general_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_shopping_cart/model/cart_model.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
+import 'package:provider/provider.dart';
 
 class CheckOutScreen extends StatefulWidget {
   const CheckOutScreen({super.key});
@@ -19,11 +21,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   var userdata;
   var phone = '';
   var email = '';
+  String address = '';
   PersistentShoppingCart cart = PersistentShoppingCart();
 
   final db = FirebaseFirestore.instance.collection('User Data');
   final TextEditingController phonecontroller = TextEditingController();
   final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController addresscontroller = TextEditingController();
 
   @override
   void initState() {
@@ -40,6 +44,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         email = userdata['Email'];
       });
       phone = userdata['phone'];
+      address = userdata['address'] ?? '';
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -49,6 +54,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   Widget build(BuildContext context) {
     double screenwidth = MediaQuery.of(context).size.width;
     double screenheight = MediaQuery.of(context).size.height;
+    final utils = Provider.of<GeneralUtils>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xfff7f7f9),
@@ -125,7 +131,104 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       ),
                       SizedBox(width: screenwidth * 0.01),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    // ignore: sized_box_for_whitespace
+                                    content: Container(
+                                        height: 196,
+                                        width: 335,
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              'Enter Your Email',
+                                              style: TextStyle(
+                                                fontFamily: 'Raleway-Bold',
+                                                fontSize: 16,
+                                                color: Color(
+                                                  0xff2B2B2B,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            TextFormField(
+                                              keyboardType:
+                                                  TextInputType.emailAddress,
+                                              controller: emailcontroller,
+                                              decoration: InputDecoration(
+                                                  hintText: 'Enter Email',
+                                                  hintStyle:
+                                                      TextStyling.hinttext,
+                                                  filled: true,
+                                                  fillColor:
+                                                      const Color(0xffF7F7F9),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12))),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                utils.showloading(true);
+                                                db
+                                                    .doc(auth.currentUser!.uid)
+                                                    .update({
+                                                  'Email': emailcontroller.text
+                                                      .toString()
+                                                }).then((value) {
+                                                  utils.showloading(false);
+                                                  GeneralUtils()
+                                                      .showsuccessflushbar(
+                                                          'Phone number added',
+                                                          context);
+                                                  fetchdata();
+                                                }).onError((error, stackTrace) {
+                                                  utils.showloading(false);
+                                                  GeneralUtils()
+                                                      .showerrorflushbar(
+                                                          error.toString(),
+                                                          context);
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: Container(
+                                                height: 40,
+                                                width: 130,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppColor
+                                                        .backgroundColor),
+                                                child: utils.load
+                                                    ? const Center(
+                                                        child:
+                                                            CircularProgressIndicator())
+                                                    : const Center(
+                                                        child: Text(
+                                                          'Submit',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Raleway-Bold',
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                              ),
+                                            )
+                                          ],
+                                        )),
+                                  );
+                                });
+                          },
                           icon: Image.asset('images/edit.png'))
                     ],
                   ),
@@ -165,7 +268,96 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       ),
                       SizedBox(width: screenwidth * 0.14),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  // ignore: sized_box_for_whitespace
+                                  content: Container(
+                                      height: 196,
+                                      width: 335,
+                                      child: Column(
+                                        children: [
+                                          const Text(
+                                            'Nhập số điện thoại',
+                                            style: TextStyle(
+                                              fontFamily: 'Raleway-Bold',
+                                              fontSize: 16,
+                                              color: Color(
+                                                0xff2B2B2B,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          TextFormField(
+                                            keyboardType: TextInputType.phone,
+                                            controller: phonecontroller,
+                                            decoration: InputDecoration(
+                                              hintText: 'Nhận số điện thoại',
+                                              hintStyle: TextStyling.hinttext,
+                                              filled: true,
+                                              fillColor:
+                                                  const Color(0xffF7F7F9),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  12,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              db
+                                                  .doc(auth.currentUser!.uid)
+                                                  .update({
+                                                'phone': phonecontroller.text
+                                                    .toString()
+                                              }).then((value) {
+                                                GeneralUtils()
+                                                    .showsuccessflushbar(
+                                                        'Phone number added',
+                                                        context);
+                                                fetchdata();
+                                              }).onError((error, stackTrace) {
+                                                GeneralUtils()
+                                                    .showerrorflushbar(
+                                                        error.toString(),
+                                                        context);
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              height: 40,
+                                              width: 130,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color:
+                                                      AppColor.backgroundColor),
+                                              child: const Center(
+                                                child: Text(
+                                                  'Submit',
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          'Raleway-Bold',
+                                                      fontSize: 12,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                );
+                              });
+                        },
                         icon: Image.asset('images/edit.png'),
                       )
                     ],
@@ -173,12 +365,138 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text('Địa chỉ',
-                      style: TextStyle(
-                        color: Color(0xff1A2530),
-                        fontFamily: 'Raleway-Medium',
-                        fontSize: 14,
-                      )),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.location_on_outlined),
+                      const SizedBox(
+                        width: 23,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            address,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins-Medium',
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff1A2530),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Text(
+                            'Địa chỉ',
+                            style: TextStyle(
+                              fontFamily: 'Poppins-Medium',
+                              fontSize: 12,
+                              color: Color(0xff707BB1),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(width: screenwidth * 0.14),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  // ignore: sized_box_for_whitespace
+                                  content: Container(
+                                      height: 196,
+                                      width: 335,
+                                      child: Column(
+                                        children: [
+                                          const Text(
+                                            'Nhập số địa',
+                                            style: TextStyle(
+                                              fontFamily: 'Raleway-Bold',
+                                              fontSize: 16,
+                                              color: Color(
+                                                0xff2B2B2B,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          TextFormField(
+                                            keyboardType: TextInputType.phone,
+                                            controller: addresscontroller,
+                                            decoration: InputDecoration(
+                                              hintText: 'Nhận địa chỉ',
+                                              hintStyle: TextStyling.hinttext,
+                                              filled: true,
+                                              fillColor:
+                                                  const Color(0xffF7F7F9),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  12,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              db
+                                                  .doc(auth.currentUser!.uid)
+                                                  .update({
+                                                'address': addresscontroller
+                                                    .text
+                                                    .toString()
+                                              }).then((value) {
+                                                GeneralUtils()
+                                                    .showsuccessflushbar(
+                                                        'Address added',
+                                                        context);
+                                                fetchdata();
+                                              }).onError((error, stackTrace) {
+                                                GeneralUtils()
+                                                    .showerrorflushbar(
+                                                        error.toString(),
+                                                        context);
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              height: 40,
+                                              width: 130,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color:
+                                                      AppColor.backgroundColor),
+                                              child: const Center(
+                                                child: Text(
+                                                  'Submit',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Raleway-Bold',
+                                                    fontSize: 12,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                );
+                              });
+                        },
+                        icon: Image.asset('images/edit.png'),
+                      )
+                    ],
+                  ),
                   const SizedBox(
                     height: 15,
                   ),
@@ -337,6 +655,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         'userId': auth.currentUser!.uid,
         'email': email,
         'phone': phone,
+        'address': address,
         'totalPrice': cartData['totalPrice'] ?? 0,
         'items': items, // Lưu danh sách sản phẩm từ cartData
         'status': 'pending',
@@ -351,7 +670,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         const SnackBar(content: Text('Đơn hàng đã được đặt thành công!')),
       );
 
-      Navigator.pushNamed(context, RouteNames.homescreen);
+      Navigator.pushNamed(context, RouteNames.navbarscreen);
     } catch (e) {
       debugPrint('Lỗi khi lưu đơn hàng: $e');
       ScaffoldMessenger.of(context).showSnackBar(

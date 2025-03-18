@@ -200,6 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'Full name': namecontroller.text.toString(),
                             'Email': emailcontroller.text.toString(),
                             'image': '',
+                            'address': '',
                           });
                           value1.showloading(false);
 

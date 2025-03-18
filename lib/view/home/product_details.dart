@@ -106,6 +106,38 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Scaffold(
       backgroundColor: const Color(0xfff7f7f9),
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: cart.showCartItemCountWidget(
+              cartItemCountWidgetBuilder: ((int itemCount) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, RouteNames.cartscreen);
+                  },
+                  child: Badge(
+                    label: Text(itemCount.toString()),
+                    child: Container(
+                      height: 52,
+                      width: 52,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Image.asset(
+                        'images/cart.png',
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          )
+        ],
         leading: InkWell(
           onTap: () {
             Navigator.pushNamed(context, RouteNames.navbarscreen);
