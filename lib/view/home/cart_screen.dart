@@ -86,10 +86,8 @@ class _CartScreenState extends State<CartScreen> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              Image(
-                                image: AssetImage(
-                                  data[index].productThumbnail.toString(),
-                                ),
+                              Image.network(
+                                data[index].productThumbnail.toString(),
                                 height: 50,
                               ),
                               const SizedBox(
@@ -255,10 +253,11 @@ class _CartScreenState extends State<CartScreen> {
                                 Text(
                                   r'$' + cart.calculateTotalPrice().toString(),
                                   style: const TextStyle(
-                                      fontFamily: 'Poppins-Medium',
-                                      color: Color(0xff1A2530),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontFamily: 'Poppins-Medium',
+                                    color: Color(0xff1A2530),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),

@@ -15,4 +15,5 @@ class RouteNames {
   static const String productsScreen = 'Products screen';
   static const String productsdetails = 'Products details';
   static const String checkOutScreen = 'CheckOut Screen';
+  static const String orderSreen = 'order Screen';
 }

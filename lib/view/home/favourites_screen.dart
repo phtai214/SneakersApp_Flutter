@@ -30,12 +30,13 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         appBar: AppBarComp(
           apptitle: 'Danh sách yêu thích',
           appleading: IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RouteNames.navbarscreen);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-              )),
+            onPressed: () {
+              Navigator.pushNamed(context, RouteNames.navbarscreen);
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            ),
+          ),
         ),
         body: StreamBuilder(
             stream: firebase.collection('items').snapshots(),
@@ -89,8 +90,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                             snapshot.data!.docs[index]['price'].toString(),
                         subtitle: snapshot.data!.docs[index]['name'].toString(),
                         title: snapshot.data!.docs[index]['subtitle'],
-                        imagelink:
-                            AssetImage(snapshot.data!.docs[index]['image']),
+                        imagelink: snapshot.data!.docs[index]['image'],
                       ),
                     );
                   }),

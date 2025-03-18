@@ -163,8 +163,8 @@ class _ProductDetailsState extends State<ProductDetails> {
               height: screenheight * 0.05,
             ),
             Center(
-              child: Image(
-                image: AssetImage(widget.image),
+              child: Image.network(
+                widget.image,
                 height: screenheight * 0.18,
                 width: screenwidth * 0.7,
               ),
@@ -319,7 +319,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             width: 10,
                           ),
                           const Text(
-                            'Thên Vào Giỏ Hàng',
+                            'Thêm Vào Giỏ Hàng',
                             style: TextStyle(
                               fontFamily: 'Raleway-SemiBold',
                               color: Colors.white,

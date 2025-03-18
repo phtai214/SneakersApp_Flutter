@@ -54,20 +54,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDYKGLvdkh500CSOaPZFtt4djueK6j8a1c',
-    appId: '1:884615994215:android:7c888f50c8e7098dc6adc2',
-    messagingSenderId: '884615994215',
-    projectId: 'ecommerce-app-468d5',
-    storageBucket: 'ecommerce-app-468d5.appspot.com',
+    apiKey: 'AIzaSyBK6jGytprd_HKOUoY0AkSyW9PYtVaMWEg',
+    appId: '1:988153510981:android:9621d238c24621b20df72c',
+    messagingSenderId: '988153510981',
+    projectId: 'sneakers-app-8f1ff',
+    storageBucket: 'sneakers-app-8f1ff.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBH7jrSOMidoqyGgF_ziym2VCR1ksnzan4',
-    appId: '1:884615994215:ios:205141c9120d0469c6adc2',
-    messagingSenderId: '884615994215',
-    projectId: 'ecommerce-app-468d5',
-    storageBucket: 'ecommerce-app-468d5.appspot.com',
-    iosClientId: '884615994215-qrjoabf70or7js8elg8r28gv5igluhgb.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA-_fUlUnKUlWBChry2tRcuivbDyV9jZIU',
+    appId: '1:988153510981:ios:194970fb3476f35e0df72c',
+    messagingSenderId: '988153510981',
+    projectId: 'sneakers-app-8f1ff',
+    storageBucket: 'sneakers-app-8f1ff.firebasestorage.app',
     iosBundleId: 'com.example.ecommerceApp',
   );
 

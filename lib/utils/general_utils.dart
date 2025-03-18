@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:ecommerce_app/model/userModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -107,20 +108,37 @@ class GeneralUtils with ChangeNotifier {
     }
   }
 
+  Future<String?> uploadImageToCloudinary(File imageValue) async {
+    const String cloudName = "dgfmiwien"; // Thay bằng cloud name của bạn
+    const String apiKey =
+        "BvZZdKGI6pq4C8QrALmkZWt2MnY"; // API Key từ Cloudinary
+    const String uploadPreset = "sneakers"; // Tạo trong Cloudinary
+
+    try {
+      FormData formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(imageValue.path),
+        "upload_preset": uploadPreset,
+        "api_key": apiKey,
+      });
+
+      Response response = await Dio().post(
+        "https://api.cloudinary.com/v1_1/$cloudName/image/upload",
+        data: formData,
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data["secure_url"];
+      }
+    } catch (e) {
+      print("Error uploading image: $e");
+    }
+
+    return null;
+  }
+
   Future uploadimage() async {
-    //pickedfile = await picker.pickImage(source: ImageSource.gallery);
-
-    // if (image != null) {
-    //   image = File(pickedfile!.path);
-
     if (image != null) {
-      final id = DateTime.now().millisecondsSinceEpoch;
-      final storageref = storage.ref('/profileImages$id');
-
-      UploadTask uploadTask = storageref.putFile(image!.absolute);
-      await Future.value(uploadTask);
-      newurl = await storageref.getDownloadURL();
-      // await db.update({'image': newurl.toString()});
+      newurl = await uploadImageToCloudinary(image!) ?? '';
 
       notifyListeners();
     } else {

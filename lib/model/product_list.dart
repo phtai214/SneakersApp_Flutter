@@ -1,13 +1,82 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+
+Future<String?> uploadImageToCloudinary(String assetPath) async {
+  const String cloudName = "dgfmiwien"; // Thay bằng cloud name của bạn
+  const String apiKey = "BvZZdKGI6pq4C8QrALmkZWt2MnY"; // API Key từ Cloudinary
+  const String uploadPreset = "sneakers"; // Tạo trong Cloudinary
+
+  try {
+    XFile image = XFile(assetPath);
+    File file = File(image.path);
+
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(file.path),
+      "upload_preset": uploadPreset,
+      "api_key": apiKey,
+    });
+
+    Response response = await Dio().post(
+      "https://api.cloudinary.com/v1_1/$cloudName/image/upload",
+      data: formData,
+      options: Options(headers: {"Content-Type": "multipart/form-data"}),
+    );
+
+    if (response.statusCode == 200 && response.data != null) {
+      return response.data["secure_url"] as String?;
+    }
+  } catch (e) {
+    print("Error uploading image: $e");
+  }
+
+  return null;
+}
 
 class ProductList {
-  List<Map<String, dynamic>> itemlist = [
+  ProductList() {
+    fetchProducts();
+  }
+
+  static Future<void> uploadProductsWithImages() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference productsCollection = firestore.collection('products');
+
+    try {
+      for (var product in items) {
+        await productsCollection.doc().set(product);
+        print("Uploaded product: ${product['productname']}");
+      }
+    } catch (e) {
+      print("Upload failed: $e");
+    }
+  }
+
+  Future<void> fetchProducts() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference productsCollection = firestore.collection('products');
+    try {
+      QuerySnapshot querySnapshot = await productsCollection.get();
+      itemlist = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      print("Fetched products: \$itemList");
+    } catch (e) {
+      print("Error fetching products: \$e");
+    }
+  }
+
+  List<Map<String, dynamic>> itemlist = [];
+
+  static List<Map<String, dynamic>> items = [
     {
       'productId': '0',
       'title': 'Best Seller',
       'productname': 'Nike Jordan',
-      'productimage': const AssetImage('images/products/shoe1.png'),
-      'imagelink': 'images/products/shoe1.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe1_mcdii1.png',
       'productprice': '350',
       'unitprice': '350',
       'description':
@@ -17,8 +86,8 @@ class ProductList {
       'productId': '1',
       'title': 'Best Seller',
       'productname': 'Nike Air Max',
-      'productimage': const AssetImage('images/products/shoe2.png'),
-      'imagelink': 'images/products/shoe2.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe2_tut1d1.png',
       'productprice': '752',
       'unitprice': '752',
       'description':
@@ -28,8 +97,8 @@ class ProductList {
       'productId': '2',
       'title': 'Best Seller',
       'productname': 'Nike Air Force',
-      'productimage': const AssetImage('images/products/shoe3.png'),
-      'imagelink': 'images/products/shoe3.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe3_y1qwvq.png',
       'productprice': '799',
       'unitprice': '799',
       'description':
@@ -39,8 +108,8 @@ class ProductList {
       'productId': '3',
       'title': 'Best Seller',
       'productname': 'Nike Blazer',
-      'productimage': const AssetImage('images/products/shoe4.png'),
-      'imagelink': 'images/products/shoe4.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe4_xhx05u.png',
       'productprice': '350',
       'unitprice': '350',
       'description':
@@ -50,8 +119,8 @@ class ProductList {
       'productId': '4',
       'title': 'Best Seller',
       'productname': 'Nike Air Jordan 4',
-      'productimage': const AssetImage('images/products/shoe5.png'),
-      'imagelink': 'images/products/shoe5.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe5_qwqghr.png',
       'productprice': '804',
       'unitprice': '804',
       'description':
@@ -61,8 +130,8 @@ class ProductList {
       'productId': '5',
       'title': 'Best Seller',
       'productname': 'Nike Air Waffle',
-      'productimage': const AssetImage('images/products/shoe6.png'),
-      'imagelink': 'images/products/shoe6.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe6_nrd6ps.png',
       'productprice': '420',
       'unitprice': '420',
       'description':
@@ -72,8 +141,8 @@ class ProductList {
       'productId': '6',
       'title': 'Best Seller',
       'productname': 'Nike Air Jordan',
-      'productimage': const AssetImage('images/products/shoe7.png'),
-      'imagelink': 'images/products/shoe7.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe7_p87j0h.png',
       'productprice': '210',
       'unitprice': '210',
       'description':
@@ -83,8 +152,8 @@ class ProductList {
       'productId': '7',
       'title': 'Best Seller',
       'productname': 'Nike Blazer Mid',
-      'productimage': const AssetImage('images/products/shoe8.png'),
-      'imagelink': 'images/products/shoe8.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe8_alookg.png',
       'productprice': '304',
       'unitprice': '304',
       'description':
@@ -94,8 +163,8 @@ class ProductList {
       'productId': '8',
       'title': 'Best Seller',
       'productname': 'Nike Dunk Low',
-      'productimage': const AssetImage('images/products/shoe9.png'),
-      'imagelink': 'images/products/shoe9.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225353/sneakers/shoe9_geolqw.png',
       'productprice': '804',
       'unitprice': '804',
       'description':
@@ -105,8 +174,8 @@ class ProductList {
       'productId': '9',
       'title': 'Best Seller',
       'productname': 'Nike 804',
-      'productimage': const AssetImage('images/products/shoe10.png'),
-      'imagelink': 'images/products/shoe10.png',
+      'imagelink':
+          'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225353/sneakers/shoe10_mjqgj5.png',
       'productprice': '820',
       'unitprice': '820',
       'description':

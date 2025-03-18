@@ -9,6 +9,7 @@ import 'package:ecommerce_app/view/home/checkout_screen.dart';
 import 'package:ecommerce_app/view/home/favourites_screen.dart';
 import 'package:ecommerce_app/view/home/home_screen.dart';
 import 'package:ecommerce_app/view/home/notification_screen.dart';
+import 'package:ecommerce_app/view/home/order_history_screen.dart';
 import 'package:ecommerce_app/view/home/profile.dart';
 import 'package:ecommerce_app/view/home/show_all_products.dart';
 import 'package:ecommerce_app/view/splash_screen/page_view.dart';
@@ -80,6 +81,9 @@ class Routes {
       case RouteNames.checkOutScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const CheckOutScreen());
+      case RouteNames.orderSreen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const OrderHistoryScreen());
 
       default:
         return MaterialPageRoute(builder: (_) {

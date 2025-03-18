@@ -1,7 +1,7 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
+// import 'dart:convert';
+// import 'package:flutter/material.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 class StripeConfig {
   Map<String, dynamic>? paymentIntent;
@@ -35,21 +35,21 @@ class StripeConfig {
     // }
   }
 
-  makepayment(BuildContext context) async {
-    // try {
-    //   paymentIntent = await createpaymentintent();
-    //   var gpay = const PaymentSheetGooglePay(merchantCountryCode: 'US');
-    //   await Stripe.instance.initPaymentSheet(
-    //       paymentSheetParameters: SetupPaymentSheetParameters(
-    //           paymentIntentClientSecret: paymentIntent!['client_secret'],
-    //           googlePay: gpay,
-    //           style: ThemeMode.system,
-    //           merchantDisplayName: 'Hamza Ali'));
+  // makepayment(BuildContext context) async {
+  // try {
+  //   paymentIntent = await createpaymentintent();
+  //   var gpay = const PaymentSheetGooglePay(merchantCountryCode: 'US');
+  //   await Stripe.instance.initPaymentSheet(
+  //       paymentSheetParameters: SetupPaymentSheetParameters(
+  //           paymentIntentClientSecret: paymentIntent!['client_secret'],
+  //           googlePay: gpay,
+  //           style: ThemeMode.system,
+  //           merchantDisplayName: 'Hamza Ali'));
 
-    //   displayPayment();
-    // } catch (e) {
-    //   StripeConfigException(e.toString());
-    //   debugPrint(e.toString());
-    // }
-  }
+  //   displayPayment();
+  // } catch (e) {
+  //   StripeConfigException(e.toString());
+  //   debugPrint(e.toString());
+  // }
+  // }
 }

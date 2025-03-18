@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ProductContainer extends StatelessWidget {
   final String title, subtitle, price;
   final String id;
-  final AssetImage imagelink;
+  final String imagelink;
   final IconButton fav;
   final int quantity;
   const ProductContainer({
@@ -38,8 +38,8 @@ class ProductContainer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             fav,
-            Image(
-              image: imagelink,
+            Image.network(
+              imagelink,
               height: 70,
             ),
             Text(
@@ -53,7 +53,7 @@ class ProductContainer extends StatelessWidget {
               subtitle,
               style: const TextStyle(
                   fontFamily: 'Raleway-Medium',
-                  fontSize: 20,
+                  fontSize: 15,
                   color: Colors.black),
             ),
             Text(
@@ -70,7 +70,7 @@ class ProductContainer extends StatelessWidget {
 
 ///
 class CartContainer extends StatelessWidget {
-  final AssetImage imagelink;
+  final String imagelink;
   final String title;
   final String subtitle;
   final String price;
@@ -99,23 +99,25 @@ class CartContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image(
-              image: imagelink,
+            Image.network(
+              imagelink,
               height: 90,
             ),
             Text(
               title,
               style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 12,
-                  color: AppColor.backgroundColor),
+                fontFamily: 'Poppins',
+                fontSize: 12,
+                color: AppColor.backgroundColor,
+              ),
             ),
             Text(
               subtitle,
               style: const TextStyle(
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: 15,
-                  color: Colors.black),
+                fontFamily: 'Raleway-Medium',
+                fontSize: 15,
+                color: Colors.black,
+              ),
             ),
             Text(
               price,
@@ -132,7 +134,7 @@ class CartContainer extends StatelessWidget {
 class ShowProductContainer extends StatelessWidget {
   final String title, subtitle, price;
   final String id;
-  final AssetImage imagelink;
+  final String imagelink;
   final IconButton fav;
   final int quantity;
   final VoidCallback onclick;
@@ -167,8 +169,8 @@ class ShowProductContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               fav,
-              Image(
-                image: imagelink,
+              Image.network(
+                imagelink,
                 height: 35,
               ),
               Text(

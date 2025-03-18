@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_app/model/product_list.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
@@ -18,6 +17,28 @@ class ShowProducts extends StatefulWidget {
 class _ShowProductsState extends State<ShowProducts> {
   final db2 = FirebaseFirestore.instance.collection('Favourites');
   final id = FirebaseAuth.instance.currentUser!.uid.toString();
+
+  List<Map<String, dynamic>> products = [];
+
+  initData() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference productsCollection = firestore.collection('products');
+    try {
+      QuerySnapshot querySnapshot = await productsCollection.get();
+      products = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      setState(() {});
+    } catch (e) {
+      print("Error fetching products: \$e");
+    }
+  }
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,119 +59,50 @@ class _ShowProductsState extends State<ShowProducts> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-        child: GridView.count(
-          mainAxisSpacing: 15,
-          crossAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: [
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[0]['productname'],
-                imagelink: ProductList().itemlist[0]['productimage'],
-                price: r'$' + ProductList().itemlist[0]['productprice'],
-                id: ProductList().itemlist[0]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[0]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[0]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[0]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[0]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[0]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[0]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[0]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[0]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[0]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[0]['productprice']
-                              .toString(),
-                          'description': ProductList()
-                              .itemlist[0]['description']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[0]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[0]['productname'],
-                        price: ProductList().itemlist[0]['productprice'],
-                        productid: ProductList().itemlist[0]['productId'],
-                        unitprice: ProductList().itemlist[0]['unitprice'],
-                        image:
-                            ProductList().itemlist[0]['imagelink'].toString(),
-                        description: ProductList().itemlist[0]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-              subtitle: ProductList().itemlist[1]['productname'],
-              imagelink: ProductList().itemlist[1]['productimage'],
-              price: r'$' + ProductList().itemlist[1]['productprice'],
-              id: ProductList().itemlist[1]['productId'],
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+          ),
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            return ShowProductContainer(
+              subtitle: products[index]['productname'],
+              imagelink: products[index]['imagelink'],
+              price: r'$' + products[index]['productprice'],
+              id: products[index]['productId'],
               quantity: 0,
               fav: IconButton(
                   onPressed: () async {
                     if (favprovider.items
-                        .contains(ProductList().itemlist[1]['productId'])) {
-                      favprovider
-                          .remove(ProductList().itemlist[1]['productId']);
+                        .contains(products[index]['productId'])) {
+                      favprovider.remove(products[index]['productId']);
 
                       db2
                           .doc(id)
                           .collection('items')
-                          .doc(ProductList().itemlist[1]['productId'])
+                          .doc(products[index]['productId'])
                           .delete();
                     } else {
-                      favprovider.add(ProductList().itemlist[1]['productId']);
+                      favprovider.add(products[index]['productId']);
                       db2
                           .doc(id)
                           .collection('items')
-                          .doc(ProductList().itemlist[1]['productId'])
+                          .doc(products[index]['productId'])
                           .set({
-                        'product id':
-                            ProductList().itemlist[1]['productId'].toString(),
-                        'name':
-                            ProductList().itemlist[1]['productname'].toString(),
-                        'subtitle':
-                            ProductList().itemlist[1]['title'].toString(),
-                        'image':
-                            ProductList().itemlist[1]['imagelink'].toString(),
-                        'price': ProductList()
-                            .itemlist[0]['productprice']
-                            .toString(),
+                        'product id': products[index]['productId'].toString(),
+                        'name': products[index]['productname'].toString(),
+                        'subtitle': products[index]['title'].toString(),
+                        'image': products[index]['imagelink'].toString(),
+                        'price': products[index]['productprice'].toString(),
+                        'description':
+                            products[index]['description'].toString(),
                       });
                     }
                   },
                   icon: Icon(
-                    favprovider.items
-                            .contains(ProductList().itemlist[1]['productId'])
+                    favprovider.items.contains(products[index]['productId'])
                         ? Icons.favorite
                         : Icons.favorite_border_outlined,
                     color: Colors.red,
@@ -160,522 +112,18 @@ class _ShowProductsState extends State<ShowProducts> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => ProductDetails(
-                      title: ProductList().itemlist[1]['productname'],
-                      price: ProductList().itemlist[1]['productprice'],
-                      productid: ProductList().itemlist[1]['productId'],
-                      unitprice: ProductList().itemlist[1]['unitprice'],
-                      image: ProductList().itemlist[1]['imagelink'].toString(),
-                      description: ProductList().itemlist[1]['description'],
+                      title: products[index]['productname'],
+                      price: products[index]['productprice'],
+                      productid: products[index]['productId'],
+                      unitprice: products[index]['unitprice'],
+                      image: products[index]['imagelink'],
+                      description: products[index]['description'],
                     ),
                   ),
                 );
               },
-            ),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[2]['productname'],
-                imagelink: ProductList().itemlist[2]['productimage'],
-                price: r'$' + ProductList().itemlist[2]['productprice'],
-                id: ProductList().itemlist[2]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[2]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[2]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[2]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[2]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[2]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[2]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[2]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[2]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[2]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[2]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[2]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[2]['productname'],
-                        price: ProductList().itemlist[2]['productprice'],
-                        productid: ProductList().itemlist[2]['productId'],
-                        unitprice: ProductList().itemlist[2]['unitprice'],
-                        image:
-                            ProductList().itemlist[2]['imagelink'].toString(),
-                        description: ProductList().itemlist[2]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[3]['productname'],
-                imagelink: ProductList().itemlist[3]['productimage'],
-                price: r'$' + ProductList().itemlist[3]['productprice'],
-                id: ProductList().itemlist[3]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[3]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[3]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[3]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[3]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[3]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[3]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[3]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[3]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[3]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[3]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[3]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[3]['productname'],
-                        price: ProductList().itemlist[3]['productprice'],
-                        productid: ProductList().itemlist[3]['productId'],
-                        unitprice: ProductList().itemlist[3]['unitprice'],
-                        image:
-                            ProductList().itemlist[3]['imagelink'].toString(),
-                        description: ProductList().itemlist[3]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[4]['productname'],
-                imagelink: ProductList().itemlist[4]['productimage'],
-                price: r'$' + ProductList().itemlist[4]['productprice'],
-                id: ProductList().itemlist[4]['productId'],
-                quantity: 1,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[4]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[4]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[4]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[4]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[4]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[4]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[4]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[4]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[4]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[0]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[4]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[4]['productname'],
-                        price: ProductList().itemlist[4]['productprice'],
-                        productid: ProductList().itemlist[4]['productId'],
-                        unitprice: ProductList().itemlist[4]['unitprice'],
-                        image:
-                            ProductList().itemlist[4]['imagelink'].toString(),
-                        description: ProductList().itemlist[4]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[5]['productname'],
-                imagelink: ProductList().itemlist[5]['productimage'],
-                price: r'$' + ProductList().itemlist[5]['productprice'],
-                id: ProductList().itemlist[5]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[5]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[5]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[5]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[5]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[5]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[5]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[5]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[5]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[5]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[5]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[5]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[5]['productname'],
-                        price: ProductList().itemlist[5]['productprice'],
-                        productid: ProductList().itemlist[5]['productId'],
-                        unitprice: ProductList().itemlist[5]['unitprice'],
-                        image:
-                            ProductList().itemlist[5]['imagelink'].toString(),
-                        description: ProductList().itemlist[5]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[6]['productname'],
-                imagelink: ProductList().itemlist[6]['productimage'],
-                price: r'$' + ProductList().itemlist[6]['productprice'],
-                id: ProductList().itemlist[6]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[6]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[6]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[6]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[6]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[6]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[6]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[6]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[6]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[6]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[6]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[6]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[6]['productname'],
-                        price: ProductList().itemlist[6]['productprice'],
-                        productid: ProductList().itemlist[6]['productId'],
-                        unitprice: ProductList().itemlist[6]['unitprice'],
-                        image:
-                            ProductList().itemlist[6]['imagelink'].toString(),
-                        description: ProductList().itemlist[6]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[7]['productname'],
-                imagelink: ProductList().itemlist[7]['productimage'],
-                price: r'$' + ProductList().itemlist[7]['productprice'],
-                id: ProductList().itemlist[7]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[7]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[7]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[7]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[7]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[7]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[7]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[7]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[7]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[7]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[7]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[7]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[7]['productname'],
-                        price: ProductList().itemlist[7]['productprice'],
-                        productid: ProductList().itemlist[7]['productId'],
-                        unitprice: ProductList().itemlist[7]['unitprice'],
-                        image:
-                            ProductList().itemlist[7]['imagelink'].toString(),
-                        description: ProductList().itemlist[7]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[8]['productname'],
-                imagelink: ProductList().itemlist[8]['productimage'],
-                price: r'$' + ProductList().itemlist[8]['productprice'],
-                id: ProductList().itemlist[8]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[8]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[8]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[8]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[8]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[8]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[8]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[8]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[8]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[8]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[8]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[8]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[8]['productname'],
-                        price: ProductList().itemlist[8]['productprice'],
-                        productid: ProductList().itemlist[8]['productId'],
-                        unitprice: ProductList().itemlist[8]['unitprice'],
-                        image:
-                            ProductList().itemlist[8]['imagelink'].toString(),
-                        description: ProductList().itemlist[8]['description'],
-                      ),
-                    ),
-                  );
-                }),
-            ShowProductContainer(
-                subtitle: ProductList().itemlist[9]['productname'],
-                imagelink: ProductList().itemlist[9]['productimage'],
-                price: r'$' + ProductList().itemlist[9]['productprice'],
-                id: ProductList().itemlist[9]['productId'],
-                quantity: 0,
-                fav: IconButton(
-                    onPressed: () async {
-                      if (favprovider.items
-                          .contains(ProductList().itemlist[9]['productId'])) {
-                        favprovider
-                            .remove(ProductList().itemlist[9]['productId']);
-
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[9]['productId'])
-                            .delete();
-                      } else {
-                        favprovider.add(ProductList().itemlist[9]['productId']);
-                        db2
-                            .doc(id)
-                            .collection('items')
-                            .doc(ProductList().itemlist[9]['productId'])
-                            .set({
-                          'product id':
-                              ProductList().itemlist[9]['productId'].toString(),
-                          'name': ProductList()
-                              .itemlist[9]['productname']
-                              .toString(),
-                          'subtitle':
-                              ProductList().itemlist[9]['title'].toString(),
-                          'image':
-                              ProductList().itemlist[9]['imagelink'].toString(),
-                          'price': ProductList()
-                              .itemlist[9]['productprice']
-                              .toString(),
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      favprovider.items
-                              .contains(ProductList().itemlist[9]['productId'])
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: Colors.red,
-                    )),
-                onclick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetails(
-                        title: ProductList().itemlist[9]['productname'],
-                        price: ProductList().itemlist[9]['productprice'],
-                        productid: ProductList().itemlist[9]['productId'],
-                        unitprice: ProductList().itemlist[9]['unitprice'],
-                        image:
-                            ProductList().itemlist[9]['imagelink'].toString(),
-                        description: ProductList().itemlist[9]['description'],
-                      ),
-                    ),
-                  );
-                }),
-          ],
+            );
+          },
         ),
       ),
     );

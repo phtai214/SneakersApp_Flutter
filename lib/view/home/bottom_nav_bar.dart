@@ -193,7 +193,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       color: Color(0xffFFFFFF),
                     ),
                     title: const Text('Orders'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, RouteNames.orderSreen);
+                    },
                   ),
                   //4
                   ListTile(

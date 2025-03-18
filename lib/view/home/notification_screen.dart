@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/product_list.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
@@ -11,6 +12,28 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+  List<Map<String, dynamic>> products = [];
+
+  initData() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference productsCollection = firestore.collection('products');
+    try {
+      QuerySnapshot querySnapshot = await productsCollection.get();
+      products = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      setState(() {});
+    } catch (e) {
+      print("Error fetching products: \$e");
+    }
+  }
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,190 +52,192 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
-          child: Column(
-            children: [
-              Container(
-                height: 135,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
+        body: products.length > 0
+            ? Padding(
+                padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Image(
-                          image: AssetImage(
-                              ProductList().itemlist[4]['imagelink']),
-                          height: 50,
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Chúng tôi có sản phẩm mới',
-                              style: TextStyle(
-                                color: AppColor.backgroundColor,
-                                fontFamily: 'Raleway-Medium',
-                                fontSize: 14,
+                    Container(
+                      height: 135,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.network(
+                                products[4]['imagelink'],
+                                height: 50,
                               ),
-                            ),
-                            const Text(
-                              'Sản phẩm có ưu đãi',
-                              style: TextStyle(
-                                  color: AppColor.backgroundColor,
-                                  fontFamily: 'Raleway-Medium',
-                                  fontSize: 14),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  r'$' + ProductList().itemlist[4]['unitprice'],
-                                  style: const TextStyle(
-                                      fontFamily: 'Poppins Medium',
-                                      fontSize: 14),
-                                )
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    )
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Chúng tôi có sản phẩm mới',
+                                    style: TextStyle(
+                                      color: AppColor.backgroundColor,
+                                      fontFamily: 'Raleway-Medium',
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Sản phẩm có ưu đãi',
+                                    style: TextStyle(
+                                        color: AppColor.backgroundColor,
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 14),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        r'$' + products[4]['unitprice'],
+                                        style: const TextStyle(
+                                            fontFamily: 'Poppins Medium',
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 135,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.network(
+                                products[6]['imagelink'],
+                                height: 50,
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Chúng tôi có sản phẩm mới',
+                                    style: TextStyle(
+                                        color: AppColor.backgroundColor,
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 14),
+                                  ),
+                                  const Text(
+                                    'Sản phẩm có ưu đãi',
+                                    style: TextStyle(
+                                      color: AppColor.backgroundColor,
+                                      fontFamily: 'Raleway-Medium',
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        r'$' + products[6]['unitprice'],
+                                        style: const TextStyle(
+                                          fontFamily: 'Poppins Medium',
+                                          fontSize: 14,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 135,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.network(
+                                products[7]['imagelink'],
+                                height: 50,
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Chúng tôi có sản phẩm mới',
+                                    style: TextStyle(
+                                        color: AppColor.backgroundColor,
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 14),
+                                  ),
+                                  const Text(
+                                    'Sản phẩm có ưu đãi',
+                                    style: TextStyle(
+                                        color: AppColor.backgroundColor,
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 14),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        r'$' + products[7]['unitprice'],
+                                        style: const TextStyle(
+                                            fontFamily: 'Poppins Medium',
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Container(
-                height: 135,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Image(
-                          image: AssetImage(
-                              ProductList().itemlist[6]['imagelink']),
-                          height: 50,
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Chúng tôi có sản phẩm mới',
-                              style: TextStyle(
-                                  color: AppColor.backgroundColor,
-                                  fontFamily: 'Raleway-Medium',
-                                  fontSize: 14),
-                            ),
-                            const Text(
-                              'Sản phẩm có ưu đãi',
-                              style: TextStyle(
-                                  color: AppColor.backgroundColor,
-                                  fontFamily: 'Raleway-Medium',
-                                  fontSize: 14),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  r'$' + ProductList().itemlist[6]['unitprice'],
-                                  style: const TextStyle(
-                                      fontFamily: 'Poppins Medium',
-                                      fontSize: 14),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Container(
-                height: 135,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Image(
-                          image: AssetImage(
-                              ProductList().itemlist[7]['imagelink']),
-                          height: 50,
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Chúng tôi có sản phẩm mới',
-                              style: TextStyle(
-                                  color: AppColor.backgroundColor,
-                                  fontFamily: 'Raleway-Medium',
-                                  fontSize: 14),
-                            ),
-                            const Text(
-                              'Sản phẩm có ưu đãi',
-                              style: TextStyle(
-                                  color: AppColor.backgroundColor,
-                                  fontFamily: 'Raleway-Medium',
-                                  fontSize: 14),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  r'$' + ProductList().itemlist[7]['unitprice'],
-                                  style: const TextStyle(
-                                      fontFamily: 'Poppins Medium',
-                                      fontSize: 14),
-                                )
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ));
+              )
+            : SizedBox());
   }
 }

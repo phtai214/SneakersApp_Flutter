@@ -110,13 +110,13 @@ class _UserProfileState extends State<UserProfile> {
                           onTap: () async {
                             await utilsProvider.getgalleryimage();
                             await utilsProvider.uploadimage();
-                            await utilsProvider
-                                .uploadtoFirestore()
-                                .onError((error, stackTrace) => {
-                                      debugPrint(error.toString()),
-                                      GeneralUtils().showerrorflushbar(
-                                          error.toString(), context)
-                                    });
+                            await utilsProvider.uploadtoFirestore().onError(
+                                  (error, stackTrace) => {
+                                    debugPrint(error.toString()),
+                                    GeneralUtils().showerrorflushbar(
+                                        error.toString(), context)
+                                  },
+                                );
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: screenheight * 0.03),
@@ -124,9 +124,10 @@ class _UserProfileState extends State<UserProfile> {
                               child: Text(
                                 'Thay đổi ảnh hồ sơ',
                                 style: TextStyle(
-                                    fontFamily: 'Raleway-SemiBold',
-                                    color: AppColor.backgroundColor,
-                                    fontSize: 16),
+                                  fontFamily: 'Raleway-SemiBold',
+                                  color: AppColor.backgroundColor,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -152,15 +153,17 @@ class _UserProfileState extends State<UserProfile> {
                             // enabled: false,
                             controller: nameController,
                             decoration: InputDecoration(
-                                label: Text(userData['Full name']),
-                                labelStyle: TextStyling.hinttext,
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                filled: true,
-                                fillColor: const Color(0xffF7F7F9),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(12))),
+                              label: Text(userData['Full name']),
+                              labelStyle: TextStyling.hinttext,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              filled: true,
+                              fillColor: const Color(0xffF7F7F9),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
                         ),
                         Align(
@@ -183,15 +186,17 @@ class _UserProfileState extends State<UserProfile> {
                           child: TextFormField(
                             controller: emailcontroller,
                             decoration: InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                label: Text(userData['Email']),
-                                labelStyle: TextStyling.hinttext,
-                                filled: true,
-                                fillColor: const Color(0xffF7F7F9),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(12))),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              label: Text(userData['Email']),
+                              labelStyle: TextStyling.hinttext,
+                              filled: true,
+                              fillColor: const Color(0xffF7F7F9),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
                         ),
                         Align(
@@ -214,13 +219,15 @@ class _UserProfileState extends State<UserProfile> {
                           child: TextFormField(
                             enabled: false,
                             decoration: InputDecoration(
-                                label: const Text('*********'),
-                                labelStyle: TextStyling.hinttext,
-                                filled: true,
-                                fillColor: const Color(0xffF7F7F9),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(12))),
+                              label: const Text('*********'),
+                              labelStyle: TextStyling.hinttext,
+                              filled: true,
+                              fillColor: const Color(0xffF7F7F9),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
                         ),
                       ],

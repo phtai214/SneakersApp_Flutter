@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/firebase_options.dart';
+import 'package:ecommerce_app/model/product_list.dart';
 import 'package:ecommerce_app/model/userModel.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/respository/components/routes.dart';
@@ -14,6 +15,8 @@ void main() async {
   await PersistentShoppingCart().init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  ProductList();
+  // ProductList.uploadProductsWithImages();
   // Stripe.publishableKey =
   //     'pk_test_51OrEh0IWbhNtVdkSnwFzfcqK2a4wRTyNqZEzWAymLjdAtYKGeWmeXMAU3RlFmGN7oqJ4FTaoL78opm3X8LlpUqYZ00D6tEdH8Z';
   runApp(const MyApp());
