@@ -101,9 +101,15 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
       body: products.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: products.length,
+              itemCount: products.length + 1,
               itemBuilder: (context, index) {
+                if (index == products.length) {
+                  return SizedBox(
+                    height: 70,
+                  );
+                }
                 final product = products[index];
+
                 return Card(
                   margin: EdgeInsets.all(8),
                   child: ListTile(

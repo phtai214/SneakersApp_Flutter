@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_app/model/product_list.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
@@ -282,9 +281,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                               .doc(widget.productid)
                               .set(
                             {
-                              'product id': ProductList()
-                                  .itemlist[0]['productId']
-                                  .toString(),
                               'name': widget.title,
                               'subtitle': 'Best Seller',
                               'image': widget.image,

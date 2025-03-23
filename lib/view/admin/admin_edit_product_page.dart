@@ -97,7 +97,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     if (widget.productId == null) {
-      await firestore.collection('products').add(productData);
+      DocumentReference newProduct =
+          await firestore.collection('products').add(productData);
+      await newProduct.update({"productId": newProduct.id});
     } else {
       await firestore
           .collection('products')
