@@ -206,7 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           value1.showsuccessflushbar(
                               'Đăng ký thành công!', context);
-                          Navigator.pushNamed(context, RouteNames.navbarscreen);
+                          Navigator.pushNamed(context, RouteNames.loginScreen);
                         }).onError((error, stackTrace) {
                           value1.showloading(false);
 

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_app/model/product_list.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
           ),
         ),
-        body: products.length > 0
+        body: products.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
                 child: Column(

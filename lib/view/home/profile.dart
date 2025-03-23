@@ -238,23 +238,24 @@ class _UserProfileState extends State<UserProfile> {
               height: screenheight * 0.025,
             ),
             RoundButtonTwo(
-                loading: utilsProvider.load,
-                onpress: () {
-                  if (emailcontroller.text.isNotEmpty &&
-                      nameController.text.isNotEmpty) {
-                    utilsProvider.showloading(true);
+              loading: utilsProvider.load,
+              onpress: () {
+                if (emailcontroller.text.isNotEmpty &&
+                    nameController.text.isNotEmpty) {
+                  utilsProvider.showloading(true);
 
-                    db.doc(id).update({
-                      'Email': emailcontroller.text.toString(),
-                      'Full name': nameController.text.toString()
-                    }).then((value) => {
-                          utilsProvider.showloading(false),
-                          GeneralUtils()
-                              .showsuccessflushbar('Profile Updated!', context)
-                        });
-                  }
-                },
-                title: 'Submit'),
+                  db.doc(id).update({
+                    'Email': emailcontroller.text.toString(),
+                    'Full name': nameController.text.toString()
+                  }).then((value) => {
+                        utilsProvider.showloading(false),
+                        GeneralUtils()
+                            .showsuccessflushbar('Profile Updated!', context)
+                      });
+                }
+              },
+              title: 'Submit',
+            ),
           ],
         ),
       ),

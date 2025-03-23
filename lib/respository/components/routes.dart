@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/view/admin/admin_home_page.dart';
 import 'package:ecommerce_app/view/auth/forgot_password.dart';
 import 'package:ecommerce_app/view/auth/login_screen.dart';
 import 'package:ecommerce_app/view/auth/sign_up_screen.dart';
@@ -84,6 +85,9 @@ class Routes {
       case RouteNames.orderSreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const OrderHistoryScreen());
+      case RouteNames.adminHomeScreen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const AdminHomePage());
 
       default:
         return MaterialPageRoute(builder: (_) {

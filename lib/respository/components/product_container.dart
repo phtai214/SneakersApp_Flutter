@@ -133,7 +133,6 @@ class CartContainer extends StatelessWidget {
 
 class ShowProductContainer extends StatelessWidget {
   final String title, subtitle, price;
-  final String id;
   final String imagelink;
   final IconButton fav;
   final int quantity;
@@ -145,7 +144,6 @@ class ShowProductContainer extends StatelessWidget {
       required this.subtitle,
       required this.imagelink,
       required this.price,
-      required this.id,
       required this.quantity,
       required this.fav,
       required this.onclick});

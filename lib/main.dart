@@ -16,6 +16,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   ProductList();
+
+  // addBrands();
   // ProductList.uploadProductsWithImages();
   // Stripe.publishableKey =
   //     'pk_test_51OrEh0IWbhNtVdkSnwFzfcqK2a4wRTyNqZEzWAymLjdAtYKGeWmeXMAU3RlFmGN7oqJ4FTaoL78opm3X8LlpUqYZ00D6tEdH8Z';

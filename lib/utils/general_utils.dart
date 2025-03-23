@@ -25,10 +25,6 @@ class GeneralUtils with ChangeNotifier {
   final storage = FirebaseStorage.instance;
   final picker = ImagePicker();
 
-  // final database = FirebaseFirestore.instance
-  //     .collection('User Data')
-  //     .doc(FirebaseAuth.instance.currentUser!.uid);
-
   void showsuccessflushbar(String subject, context) {
     Flushbar(
       message: subject,
@@ -38,7 +34,6 @@ class GeneralUtils with ChangeNotifier {
       reverseAnimationCurve: Curves.decelerate,
       forwardAnimationCurve: Curves.elasticOut,
       backgroundColor: Colors.green,
-      //isDismissible: false,
       duration: const Duration(seconds: 4),
       icon: const Icon(
         Icons.check,
@@ -74,7 +69,6 @@ class GeneralUtils with ChangeNotifier {
   Future<void> getgalleryimage() async {
     pickedfile =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
-    //notifyListeners();
     if (pickedfile != null) {
       image = File(pickedfile!.path);
       notifyListeners();
@@ -109,10 +103,9 @@ class GeneralUtils with ChangeNotifier {
   }
 
   Future<String?> uploadImageToCloudinary(File imageValue) async {
-    const String cloudName = "dgfmiwien"; // Thay bằng cloud name của bạn
-    const String apiKey =
-        "BvZZdKGI6pq4C8QrALmkZWt2MnY"; // API Key từ Cloudinary
-    const String uploadPreset = "sneakers"; // Tạo trong Cloudinary
+    const String cloudName = "dgfmiwien";
+    const String apiKey = "BvZZdKGI6pq4C8QrALmkZWt2MnY";
+    const String uploadPreset = "sneakers";
 
     try {
       FormData formData = FormData.fromMap({
@@ -129,9 +122,7 @@ class GeneralUtils with ChangeNotifier {
       if (response.statusCode == 200 && response.data != null) {
         return response.data["secure_url"];
       }
-    } catch (e) {
-      print("Error uploading image: $e");
-    }
+    } catch (_) {}
 
     return null;
   }
@@ -151,7 +142,6 @@ class GeneralUtils with ChangeNotifier {
         .collection('User Data')
         .doc(FirebaseAuth.instance.currentUser!.uid);
     await db.update({'image': newurl});
-    // UserModel().userimage = newurl;
 
     notifyListeners();
   }

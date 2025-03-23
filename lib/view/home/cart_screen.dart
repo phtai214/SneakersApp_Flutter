@@ -1,7 +1,6 @@
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
-import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 
@@ -71,6 +70,35 @@ class _CartScreenState extends State<CartScreen> {
               Expanded(
                 child: cart.showCartItems(
                   cartItemsBuilder: (context, data) {
+                    if (data.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Giỏ hàng đang rỗng',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  RouteNames
+                                      .navbarscreen, // Chuyển về trang có thanh điều hướng
+                                  (route) => false, // Xoá hết màn hình trước đó
+                                );
+                              },
+                              child: const Text('Tiếp tục mua sắm'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                     return ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (context, index) {
@@ -90,6 +118,7 @@ class _CartScreenState extends State<CartScreen> {
                               Image.network(
                                 data[index].productThumbnail.toString(),
                                 height: 50,
+                                width: 70,
                               ),
                               const SizedBox(
                                 width: 20,

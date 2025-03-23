@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
@@ -19,19 +20,23 @@ class _ShowProductsState extends State<ShowProducts> {
   final id = FirebaseAuth.instance.currentUser!.uid.toString();
 
   List<Map<String, dynamic>> products = [];
+  List<Map<String, dynamic>> filteredProducts = [];
+  TextEditingController searchController = TextEditingController();
 
-  initData() async {
+  Future<void> initData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference productsCollection = firestore.collection('products');
+
     try {
       QuerySnapshot querySnapshot = await productsCollection.get();
       products = querySnapshot.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
+
+      filteredProducts = List.from(products);
+
       setState(() {});
-    } catch (e) {
-      print("Error fetching products: \$e");
-    }
+    } catch (_) {}
   }
 
   @override
@@ -40,91 +45,141 @@ class _ShowProductsState extends State<ShowProducts> {
     super.initState();
   }
 
+  void searchProducts(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        filteredProducts = List.from(products);
+      });
+      return;
+    }
+
+    setState(() {
+      filteredProducts = products
+          .where((product) => product['productname']
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final favprovider = Provider.of<FavouriteProvider>(context);
     return Scaffold(
-      backgroundColor: Color(0xfff7f7f9),
+      backgroundColor: const Color(0xfff7f7f9),
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
             Navigator.pushNamed(context, RouteNames.navbarscreen);
           },
-          child: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-          ),
+          child: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
         title: const Text('Tất cả sản phẩm'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Color(0xff6A6A6A),
+                ),
+                hintText: 'Tìm kiếm giày',
+                hintStyle: TextStyling.hinttext,
+                filled: true,
+                fillColor: const Color(0xffffffff),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onChanged: searchProducts,
+            ),
           ),
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            return ShowProductContainer(
-              subtitle: products[index]['productname'],
-              imagelink: products[index]['imagelink'],
-              price: r'$' + products[index]['productprice'],
-              id: products[index]['productId'],
-              quantity: 0,
-              fav: IconButton(
-                  onPressed: () async {
-                    if (favprovider.items
-                        .contains(products[index]['productId'])) {
-                      favprovider.remove(products[index]['productId']);
-
-                      db2
-                          .doc(id)
-                          .collection('items')
-                          .doc(products[index]['productId'])
-                          .delete();
-                    } else {
-                      favprovider.add(products[index]['productId']);
-                      db2
-                          .doc(id)
-                          .collection('items')
-                          .doc(products[index]['productId'])
-                          .set({
-                        'product id': products[index]['productId'].toString(),
-                        'name': products[index]['productname'].toString(),
-                        'subtitle': products[index]['title'].toString(),
-                        'image': products[index]['imagelink'].toString(),
-                        'price': products[index]['productprice'].toString(),
-                        'description':
-                            products[index]['description'].toString(),
-                      });
-                    }
-                  },
-                  icon: Icon(
-                    favprovider.items.contains(products[index]['productId'])
-                        ? Icons.favorite
-                        : Icons.favorite_border_outlined,
-                    color: Colors.red,
-                  )),
-              onclick: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ProductDetails(
-                      title: products[index]['productname'],
-                      price: products[index]['productprice'],
-                      productid: products[index]['productId'],
-                      unitprice: products[index]['unitprice'],
-                      image: products[index]['imagelink'],
-                      description: products[index]['description'],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                itemCount: filteredProducts.length,
+                itemBuilder: (context, index) {
+                  return ShowProductContainer(
+                    subtitle: filteredProducts[index]['productname'],
+                    imagelink: filteredProducts[index]['imagelink'],
+                    price: r'$' + filteredProducts[index]['productprice'],
+                    quantity: 0,
+                    fav: IconButton(
+                        onPressed: () async {
+                          if (favprovider.items
+                              .contains(filteredProducts[index]['productId'])) {
+                            favprovider
+                                .remove(filteredProducts[index]['productId']);
+                            db2
+                                .doc(id)
+                                .collection('items')
+                                .doc(filteredProducts[index]['productId'])
+                                .delete();
+                          } else {
+                            favprovider
+                                .add(filteredProducts[index]['productId']);
+                            db2
+                                .doc(id)
+                                .collection('items')
+                                .doc(filteredProducts[index]['productId'])
+                                .set({
+                              'product id': filteredProducts[index]['productId']
+                                  .toString(),
+                              'name': filteredProducts[index]['productname']
+                                  .toString(),
+                              'subtitle':
+                                  filteredProducts[index]['title'].toString(),
+                              'image': filteredProducts[index]['imagelink']
+                                  .toString(),
+                              'price': filteredProducts[index]['productprice']
+                                  .toString(),
+                              'description': filteredProducts[index]
+                                      ['description']
+                                  .toString(),
+                            });
+                          }
+                        },
+                        icon: Icon(
+                          favprovider.items.contains(
+                                  filteredProducts[index]['productId'])
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          color: Colors.red,
+                        )),
+                    onclick: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => ProductDetails(
+                            title: filteredProducts[index]['productname'],
+                            price: filteredProducts[index]['productprice'],
+                            productid: filteredProducts[index]['productId'],
+                            unitprice: filteredProducts[index]['unitprice'],
+                            image: filteredProducts[index]['imagelink'],
+                            description: filteredProducts[index]['description'],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -497,31 +497,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       )
                     ],
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const Text(
-                    'Collge Road, Lahore',
-                    style: TextStyle(
-                        fontFamily: 'Poppins-Medium',
-                        fontSize: 12,
-                        color: Color(0xff707BB1)),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    'Payment Method',
-                    style: TextStyle(
-                      color: Color(0xff1A2530),
-                      fontFamily: 'Raleway-Medium',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: screenheight * 0.2,
-                  ),
+                  Spacer(),
                   cart.showTotalAmountWidget(
                     cartTotalAmountWidgetBuilder: (totalAmount) => Visibility(
                       visible: totalAmount == 0.0 ? false : true,
@@ -640,13 +616,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     try {
       String orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
-      // Lấy dữ liệu giỏ hàng từ getCartData()
       Map<String, dynamic> cartData = cart.getCartData();
-      // Lấy danh sách sản phẩm từ giỏ hàng
       List<PersistentShoppingCartItem> cartItems =
           List<PersistentShoppingCartItem>.from(cartData['cartItems'] ?? []);
 
-// Chuyển đổi danh sách sản phẩm thành dạng Map để lưu vào Firestore
       List<Map<String, dynamic>> items =
           cartItems.map((item) => item.toJson()).toList();
 
@@ -657,14 +630,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         'phone': phone,
         'address': address,
         'totalPrice': cartData['totalPrice'] ?? 0,
-        'items': items, // Lưu danh sách sản phẩm từ cartData
+        'items': items,
         'status': 'pending',
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      debugPrint('Đơn hàng đã được lưu thành công!');
-
-      cart.clearCart(); // Xóa giỏ hàng sau khi đặt hàng thành công
+      cart.clearCart();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Đơn hàng đã được đặt thành công!')),
@@ -672,7 +643,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
       Navigator.pushNamed(context, RouteNames.navbarscreen);
     } catch (e) {
-      debugPrint('Lỗi khi lưu đơn hàng: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại!')),
       );

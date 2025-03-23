@@ -117,13 +117,15 @@ class OrderHistoryScreen extends StatelessWidget {
   /// Hàm lấy màu sắc tương ứng với trạng thái đơn hàng
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'Chờ xử lý':
+      case 'pending':
         return Colors.orange;
-      case 'Đang giao':
+      case 'processing':
         return Colors.blue;
-      case 'Hoàn thành':
+      case 'shipped':
         return Colors.green;
-      case 'Đã hủy':
+      case 'delivered':
+        return Colors.green;
+      case 'cancelled':
         return Colors.red;
       default:
         return Colors.grey;

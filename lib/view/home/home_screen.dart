@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/app_bar.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
+import 'package:ecommerce_app/respository/components/brand_list.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
@@ -33,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
       setState(() {});
-    } catch (e) {
-      print("Error fetching products: \$e");
-    }
+    } catch (_) {}
   }
 
   @override
@@ -50,12 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final screenwidth = MediaQuery.of(context).size.width;
     final db2 = FirebaseFirestore.instance.collection('Favourites');
     final id = FirebaseAuth.instance.currentUser!.uid.toString();
-    // var scaffoldKey = GlobalKey<ScaffoldState>();
 
     final favprovider = Provider.of<FavouriteProvider>(context);
     return Scaffold(
-      // key: scaffoldKey,
-
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: AppBarComp(
@@ -99,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       backgroundColor: const Color(0xffF7F7F9),
-
       body: Padding(
         padding: EdgeInsets.only(
           left: screenwidth * 0.05,
@@ -116,6 +111,10 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: screenwidth,
                 child: TextFormField(
+                  readOnly: true,
+                  onTap: () {
+                    Navigator.pushNamed(context, RouteNames.productsScreen);
+                  },
                   decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.search,
@@ -146,74 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: screenheight * 0.03,
               ),
-              Row(
-                children: [
-                  Container(
-                    height: 48,
-                    width: 95,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadiusDirectional.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Tất cả giày',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Container(
-                    height: 48,
-                    width: 95,
-                    decoration: const BoxDecoration(
-                      color: AppColor.backgroundColor,
-                      borderRadius: BorderRadiusDirectional.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Ngoài trời',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    height: 48,
-                    width: 95,
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadiusDirectional.all(Radius.circular(12))),
-                    child: const Center(
-                      child: Text(
-                        'Quần vợt',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              BrandList(),
               SizedBox(
                 height: screenheight * 0.03,
               ),
@@ -456,50 +388,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-
-      //
     );
   }
 }
-// appBar: PreferredSize(
-      //   preferredSize: const Size.fromHeight(80),
-      //   child: AppBar(
-      //     actions: [
-      //       Padding(
-      //         padding: const EdgeInsets.only(top: 20),
-      //         child: Badge(
-      //           child: Container(
-      //             height: 52,
-      //             width: 52,
-      //             decoration: const BoxDecoration(
-      //               shape: BoxShape.circle,
-      //               color: Colors.white,
-      //             ),
-      //             child: Image.asset(
-      //               'images/cart.png',
-      //               color: Colors.black,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //     ],
-      //     leading: Padding(
-      //       padding: const EdgeInsets.only(top: 20),
-      //       child: IconButton(
-      //           onPressed: () => scaffoldKey.currentState!.openDrawer(),
-      //           icon: const Image(image: AssetImage('images/bar.png'))),
-      //     ),
-      //     title: const Padding(
-      //       padding: EdgeInsets.only(top: 20),
-      //       child: Text(
-      //         'Explore',
-      //         style: TextStyling.headingstyle,
-      //       ),
-      //     ),
-      //     centerTitle: true,
-      //   ),
-   
-      // ),
