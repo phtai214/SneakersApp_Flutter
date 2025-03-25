@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,8 @@ class _ProductByBrandScreenState extends State<ProductByBrandScreen> {
             return ShowProductContainer(
               subtitle: products[index]['productname'],
               imagelink: products[index]['imagelink'],
-              price: r'$' + products[index]['productprice'],
+              price: Formatter.formatCurrency(
+                  double.parse(products[index]['productprice']).toInt()),
               quantity: 0,
               fav: IconButton(
                   onPressed: () async {

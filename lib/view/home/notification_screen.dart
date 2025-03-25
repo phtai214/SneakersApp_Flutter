@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -99,7 +100,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        r'$' + products[4]['unitprice'],
+                                        Formatter.formatCurrency(double.parse(
+                                                products[4]['unitprice'])
+                                            .toInt()),
                                         style: const TextStyle(
                                             fontFamily: 'Poppins Medium',
                                             fontSize: 14),
@@ -159,7 +162,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        r'$' + products[6]['unitprice'],
+                                        Formatter.formatCurrency(double.parse(
+                                                products[6]['unitprice'])
+                                            .toInt()),
                                         style: const TextStyle(
                                           fontFamily: 'Poppins Medium',
                                           fontSize: 14,
@@ -220,7 +225,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        r'$' + products[7]['unitprice'],
+                                        Formatter.formatCurrency(double.parse(
+                                                products[7]['unitprice'])
+                                            .toInt()),
                                         style: const TextStyle(
                                             fontFamily: 'Poppins Medium',
                                             fontSize: 14),

@@ -59,7 +59,11 @@ class ProductContainer extends StatelessWidget {
             Text(
               price,
               style: const TextStyle(
-                  fontFamily: 'Poppins', fontSize: 16, color: Colors.black),
+                fontFamily: 'Poppins',
+                fontSize: 14,
+                color: Colors.blue,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ],
         ),

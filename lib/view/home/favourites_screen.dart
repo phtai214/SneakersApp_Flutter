@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/app_bar.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,76 +27,78 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xffF7F7F9),
-        appBar: AppBarComp(
-          apptitle: 'Danh sách yêu thích',
-          appleading: IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, RouteNames.navbarscreen);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-            ),
+      backgroundColor: const Color(0xffF7F7F9),
+      appBar: AppBarComp(
+        apptitle: 'Danh sách yêu thích',
+        appleading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, RouteNames.navbarscreen);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
           ),
         ),
-        body: StreamBuilder(
-            stream: firebase.collection('items').snapshots(),
-            builder: (
-              BuildContext context,
-              AsyncSnapshot<QuerySnapshot> snapshot,
-            ) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator(
-                  color: Colors.purple,
-                ));
-              } else if (snapshot.hasError) {
-                const Center(
-                  child: Text("Error Occured"),
-                );
-              }
+      ),
+      body: StreamBuilder(
+        stream: firebase.collection('items').snapshots(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<QuerySnapshot> snapshot,
+        ) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.purple,
+            ));
+          } else if (snapshot.hasError) {
+            const Center(
+              child: Text("Error Occured"),
+            );
+          }
 
-              return Padding(
-                padding: const EdgeInsets.only(
-                  top: 37,
-                  left: 12,
-                  right: 12,
-                ),
-                child: GridView.count(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  children: List.generate(snapshot.data!.size, (index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => ProductDetails(
-                              title: snapshot.data!.docs[index]['name'],
-                              price: snapshot.data!.docs[index]['price'],
-                              productid: snapshot.data!.docs[index]
-                                  ['product id'],
-                              unitprice: snapshot.data!.docs[index]['price']
-                                  .toString(),
-                              image: snapshot.data!.docs[index]['image'],
-                              description: snapshot.data!.docs[index]
-                                  ['description'],
-                            ),
-                          ),
-                        );
-                      },
-                      child: CartContainer(
-                        price: r'$' +
-                            snapshot.data!.docs[index]['price'].toString(),
-                        subtitle: snapshot.data!.docs[index]['name'].toString(),
-                        title: snapshot.data!.docs[index]['subtitle'],
-                        imagelink: snapshot.data!.docs[index]['image'],
+          return Padding(
+            padding: const EdgeInsets.only(
+              top: 37,
+              left: 12,
+              right: 12,
+            ),
+            child: GridView.count(
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              crossAxisCount: 2,
+              children: List.generate(snapshot.data!.size, (index) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ProductDetails(
+                          title: snapshot.data!.docs[index]['name'],
+                          price: snapshot.data!.docs[index]['price'],
+                          productid: snapshot.data!.docs[index]['product id'],
+                          unitprice:
+                              snapshot.data!.docs[index]['price'].toString(),
+                          image: snapshot.data!.docs[index]['image'],
+                          description: snapshot.data!.docs[index]
+                              ['description'],
+                        ),
                       ),
                     );
-                  }),
-                ),
-              );
-            }));
+                  },
+                  child: CartContainer(
+                    price: Formatter.formatCurrency(
+                        double.parse(snapshot.data!.docs[index]['price'])
+                            .toInt()),
+                    subtitle: snapshot.data!.docs[index]['name'].toString(),
+                    title: snapshot.data!.docs[index]['subtitle'],
+                    imagelink: snapshot.data!.docs[index]['image'],
+                  ),
+                );
+              }),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

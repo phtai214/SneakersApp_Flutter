@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/utils/general_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -184,7 +185,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               height: 5,
             ),
             Text(
-              r'$' + widget.price,
+              Formatter.formatCurrency(double.parse(widget.price).toInt()),
               style: const TextStyle(
                 fontFamily: 'Poppins-Medium',
                 fontSize: 26,

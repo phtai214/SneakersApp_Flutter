@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 
@@ -141,19 +142,12 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                   Row(
                                     children: [
-                                      const Text(
-                                        r'$',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                        ),
-                                      ),
                                       Text(
-                                        data[index].unitPrice.toString(),
+                                        Formatter.formatCurrency(
+                                            data[index].unitPrice.toInt()),
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -272,17 +266,19 @@ class _CartScreenState extends State<CartScreen> {
                                 const Text(
                                   'Thành tiền',
                                   style: TextStyle(
-                                      fontFamily: 'Raleway-SemiBold',
-                                      color: Color(0xff707B81),
-                                      fontSize: 16),
+                                    fontFamily: 'Raleway-SemiBold',
+                                    color: Color(0xff707B81),
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Spacer(),
                                 Text(
-                                  r'$' + cart.calculateTotalPrice().toString(),
+                                  Formatter.formatCurrency(
+                                      cart.calculateTotalPrice().toInt()),
                                   style: const TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     color: Color(0xff1A2530),
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -333,12 +329,14 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 Spacer(),
                                 Text(
-                                  r'$' + cart.calculateTotalPrice().toString(),
+                                  Formatter.formatCurrency(
+                                      cart.calculateTotalPrice().toInt()),
                                   style: const TextStyle(
-                                      fontFamily: 'Poppins-Medium',
-                                      color: Color(0xff1A2530),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontFamily: 'Poppins-Medium',
+                                    color: Color(0xff1A2530),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/admin/admin_edit_product_page.dart';
 import 'package:flutter/material.dart';
 
@@ -72,8 +73,53 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
   }
 
   Future<void> deleteProduct(String id) async {
-    await firestore.collection('products').doc(id).delete();
-    fetchProducts();
+    try {
+      await firestore.collection('products').doc(id).delete();
+      fetchProducts();
+
+      // Hiển thị thông báo thành công
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Xóa sản phẩm thành công!"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Lỗi khi xóa sản phẩm!"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> confirmDeleteProduct(String id) async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Xác nhận xóa"),
+        content: Text("Bạn có chắc chắn muốn xóa sản phẩm này không?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text("Hủy"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: Text("Xóa", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      deleteProduct(id);
+    }
   }
 
   @override
@@ -120,7 +166,8 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                       fit: BoxFit.contain,
                     ),
                     title: Text(product['productname']),
-                    subtitle: Text("Giá: ${product['productprice']}"),
+                    subtitle: Text(
+                        "Giá: ${Formatter.formatCurrency(double.parse(product['productprice']).toInt())}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -131,7 +178,7 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                         ),
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => deleteProduct(product['id']),
+                          onPressed: () => confirmDeleteProduct(product['id']),
                         ),
                       ],
                     ),

@@ -80,7 +80,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
         priceController.text.isEmpty ||
         selectedImageUrl == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin!")));
+        SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin!")),
+      );
       return;
     }
 
@@ -96,18 +97,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    if (widget.productId == null) {
-      DocumentReference newProduct =
-          await firestore.collection('products').add(productData);
-      await newProduct.update({"productId": newProduct.id});
-    } else {
-      await firestore
-          .collection('products')
-          .doc(widget.productId)
-          .update(productData);
-    }
+    try {
+      if (widget.productId == null) {
+        DocumentReference newProduct =
+            await firestore.collection('products').add(productData);
+        await newProduct.update({"productId": newProduct.id});
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Thêm sản phẩm thành công!")),
+        );
+      } else {
+        await firestore
+            .collection('products')
+            .doc(widget.productId)
+            .update(productData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Cập nhật sản phẩm thành công!")),
+        );
+      }
 
-    Navigator.pop(context, true);
+      await Future.delayed(Duration(seconds: 1));
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Đã xảy ra lỗi, vui lòng thử lại!")),
+      );
+    }
   }
 
   @override

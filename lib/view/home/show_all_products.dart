@@ -3,6 +3,7 @@ import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +116,9 @@ class _ShowProductsState extends State<ShowProducts> {
                   return ShowProductContainer(
                     subtitle: filteredProducts[index]['productname'],
                     imagelink: filteredProducts[index]['imagelink'],
-                    price: r'$' + filteredProducts[index]['productprice'],
+                    price: Formatter.formatCurrency(
+                        double.parse(filteredProducts[index]['productprice'])
+                            .toInt()),
                     quantity: 0,
                     fav: IconButton(
                         onPressed: () async {

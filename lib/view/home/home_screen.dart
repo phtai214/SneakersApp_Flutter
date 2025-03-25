@@ -5,6 +5,7 @@ import 'package:ecommerce_app/respository/components/brand_list.dart';
 import 'package:ecommerce_app/respository/components/product_container.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/fav_provider.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/home/product_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -175,139 +176,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-              if (products.length >= 2)
-                Row(
-                  children: [
-                    InkWell(
+              if (products.length >= 8)
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 8,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 0.85),
+                  itemBuilder: (context, index) {
+                    return InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => ProductDetails(
-                              title: products[0]['productname'],
-                              price: products[0]['productprice'],
-                              productid: products[0]['productId'],
-                              unitprice: products[0]['unitprice'],
-                              image: products[0]['imagelink'].toString(),
-                              description: products[0]['description'],
+                              title: products[index]['productname'],
+                              price: products[index]['productprice'],
+                              productid: products[index]['productId'],
+                              unitprice: products[index]['unitprice'],
+                              image: products[index]['imagelink'].toString(),
+                              description: products[index]['description'],
                             ),
                           ),
                         );
                       },
                       child: ProductContainer(
                         fav: IconButton(
-                            onPressed: () async {
-                              if (favprovider.items
-                                  .contains(products[0]['productId'])) {
-                                favprovider.remove(products[0]['productId']);
-                                db2
-                                    .doc(id)
-                                    .collection('items')
-                                    .doc(products[0]['productId'])
-                                    .delete();
-                              } else {
-                                favprovider.add(products[0]['productId']);
-                                db2
-                                    .doc(id)
-                                    .collection('items')
-                                    .doc(products[0]['productId'])
-                                    .set(
-                                  {
-                                    'product id':
-                                        products[0]['productId'].toString(),
-                                    'name':
-                                        products[0]['productname'].toString(),
-                                    'subtitle': products[0]['title'].toString(),
-                                    'image':
-                                        products[0]['imagelink'].toString(),
-                                    'price':
-                                        products[0]['productprice'].toString(),
-                                    'description':
-                                        products[0]['description'].toString(),
-                                  },
-                                );
-                              }
-                            },
-                            icon: Icon(
-                              favprovider.items
-                                      .contains(products[0]['productId'])
-                                  ? Icons.favorite
-                                  : Icons.favorite_border_outlined,
-                              color: Colors.red,
-                            )),
-                        id: '1',
-                        subtitle: products[0]['productname'],
-                        imagelink: products[0]['imagelink'],
-                        price: r'$' + products[0]['productprice'],
-                        quantity: 0,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    //product 2
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => ProductDetails(
-                              title: products[1]['productname'],
-                              price: products[1]['productprice'],
-                              productid: products[1]['productId'],
-                              unitprice: products[1]['unitprice'],
-                              image: products[1]['imagelink'].toString(),
-                              description: products[1]['description'],
-                            ),
-                          ),
-                        );
-                      },
-                      child: ProductContainer(
-                        fav: IconButton(
-                            onPressed: () async {
-                              if (favprovider.items
-                                  .contains(products[1]['productId'])) {
-                                favprovider.remove(products[1]['productId']);
-
-                                db2
-                                    .doc(id)
-                                    .collection('items')
-                                    .doc(products[1]['productId'])
-                                    .delete();
-                              } else {
-                                db2
-                                    .doc(id)
-                                    .collection('items')
-                                    .doc(products[1]['productId'])
-                                    .set({
+                          onPressed: () async {
+                            if (favprovider.items
+                                .contains(products[index]['productId'])) {
+                              favprovider.remove(products[index]['productId']);
+                              db2
+                                  .doc(id)
+                                  .collection('items')
+                                  .doc(products[index]['productId'])
+                                  .delete();
+                            } else {
+                              favprovider.add(products[index]['productId']);
+                              db2
+                                  .doc(id)
+                                  .collection('items')
+                                  .doc(products[index]['productId'])
+                                  .set(
+                                {
                                   'product id':
-                                      products[1]['productId'].toString(),
-                                  'name': products[1]['productname'].toString(),
-                                  'subtitle': products[1]['title'].toString(),
-                                  'image': products[1]['imagelink'].toString(),
-                                  'price':
-                                      products[1]['productprice'].toString(),
+                                      products[index]['productId'].toString(),
+                                  'name':
+                                      products[index]['productname'].toString(),
+                                  'subtitle':
+                                      products[index]['title'].toString(),
+                                  'image':
+                                      products[index]['imagelink'].toString(),
+                                  'price': products[index]['productprice']
+                                      .toString(),
                                   'description':
-                                      products[1]['description'].toString(),
-                                });
-                                favprovider.add(products[1]['productId']);
-                              }
-                            },
-                            icon: Icon(
-                              favprovider.items
-                                      .contains(products[1]['productId'])
-                                  ? Icons.favorite
-                                  : Icons.favorite_border_outlined,
-                              color: Colors.red,
-                            )),
-                        id: '1',
-                        subtitle: products[1]['productname'],
-                        imagelink: products[1]['imagelink'],
-                        price: r'$' + products[1]['productprice'],
+                                      products[index]['description'].toString(),
+                                },
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            favprovider.items
+                                    .contains(products[index]['productId'])
+                                ? Icons.favorite
+                                : Icons.favorite_border_outlined,
+                            color: Colors.red,
+                          ),
+                        ),
+                        id: products[index]['productId'],
+                        subtitle: products[index]['productname'],
+                        imagelink: products[index]['imagelink'],
+                        price: Formatter.formatCurrency(
+                            double.parse(products[index]['productprice'])
+                                .toInt()),
                         quantity: 0,
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               Row(
                 children: [

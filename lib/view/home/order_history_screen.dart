@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,7 @@ class OrderHistoryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Tổng tiền: ${order['totalPrice']} VNĐ',
+                        'Tổng tiền: ${Formatter.formatCurrency(double.parse(order['totalPrice'].toString()).toInt())}',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black54,
@@ -97,7 +98,8 @@ class OrderHistoryScreen extends StatelessWidget {
                       ),
                       subtitle: Text('Số lượng: ${item['quantity']}'),
                       trailing: Text(
-                        '${item['unitPrice']} VNĐ',
+                        Formatter.formatCurrency(
+                            double.parse(item['unitPrice'].toString()).toInt()),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.green,

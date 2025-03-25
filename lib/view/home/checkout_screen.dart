@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
+import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/utils/general_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -497,6 +498,46 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       )
                     ],
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.payment_outlined),
+                      const SizedBox(
+                        width: 23,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hình thức thanh toán",
+                            style: const TextStyle(
+                              fontFamily: 'Poppins-Medium',
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff1A2530),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Text(
+                            'Thanh toán khi nhận hàng',
+                            style: TextStyle(
+                              fontFamily: 'Poppins-Medium',
+                              fontSize: 12,
+                              color: Color(0xff707BB1),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                   Spacer(),
                   cart.showTotalAmountWidget(
                     cartTotalAmountWidgetBuilder: (totalAmount) => Visibility(
@@ -521,7 +562,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 ),
                                 Spacer(),
                                 Text(
-                                  r'$' + cart.calculateTotalPrice().toString(),
+                                  Formatter.formatCurrency(
+                                      cart.calculateTotalPrice().toInt()),
                                   style: const TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     color: Color(0xff1A2530),
@@ -577,7 +619,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 ),
                                 Spacer(),
                                 Text(
-                                  r'$' + cart.calculateTotalPrice().toString(),
+                                  Formatter.formatCurrency(
+                                      cart.calculateTotalPrice().toInt()),
                                   style: const TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     color: Color(0xff1A2530),
