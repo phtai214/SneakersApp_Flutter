@@ -2,6 +2,7 @@ class RouteNames {
   static const String screenOne = 'Screen One';
   static const String screenTwo = 'Screen Two';
   static const String screenThree = 'Screen Three';
+  static const String screenFour = 'Screen Four';
   static const String pageViewScreen = 'Page View';
   static const String loginScreen = 'login View';
   static const String signUpScreen = 'Sign Up';

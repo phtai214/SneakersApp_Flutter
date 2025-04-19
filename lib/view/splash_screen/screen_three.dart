@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/round_button.dart';
+import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:flutter/material.dart';
 
 class ScreenThree extends StatelessWidget {
@@ -21,7 +22,7 @@ class ScreenThree extends StatelessWidget {
                   children: [
                     Center(
                         child: Text(
-                      "Lets Start Journey",
+                      "Khởi động hành trình",
                       style: TextStyle(
                           fontFamily: 'Raleway-Bold',
                           fontSize: 34,
@@ -32,7 +33,7 @@ class ScreenThree extends StatelessWidget {
                     )),
                     Center(
                         child: Text(
-                      "With Nike",
+                      "cùng Nike",
                       style: TextStyle(
                           fontFamily: 'Raleway-Bold',
                           fontSize: 34,
@@ -51,7 +52,7 @@ class ScreenThree extends StatelessWidget {
                   children: [
                     Center(
                         child: Text(
-                      "Smart, Gorgeous & Fashionable ",
+                      "Thông minh, cuốn hút & thời thượng, ",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
@@ -62,7 +63,7 @@ class ScreenThree extends StatelessWidget {
                     )),
                     Center(
                         child: Text(
-                      "Collection Explor Now",
+                      "khám phá không gian mới✨🔥",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
@@ -141,7 +142,8 @@ class ScreenThree extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * .90),
-                child: RoundButtonOne(onpress: () {}, title: 'Next'),
+                child: RoundButtonOne(onpress: () {Navigator.pushNamed(context, RouteNames.screenFour);}, title: 'Tiếp theo'),
+                
               ),
             ],
           )),

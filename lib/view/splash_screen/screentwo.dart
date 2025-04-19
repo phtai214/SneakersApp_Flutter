@@ -22,7 +22,7 @@ class ScreenTwo extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      "Welcome To ",
+                      "Chào mừng đến  ",
                       style: TextStyle(
                         fontFamily: 'Raleway-Bold',
                         fontSize: 30,
@@ -35,7 +35,7 @@ class ScreenTwo extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      "Nike",
+                      "với Nike",
                       style: TextStyle(
                         fontFamily: 'Raleway-Bold',
                         fontSize: 30,
@@ -141,7 +141,7 @@ class ScreenTwo extends StatelessWidget {
                   top: MediaQuery.of(context).size.height * .90),
               child: RoundButtonOne(
                 onpress: () {
-                  Navigator.pushNamed(context, RouteNames.loginScreen);
+                  Navigator.pushNamed(context, RouteNames.screenThree);
                 },
                 title: 'Bắt đầu',
               ),

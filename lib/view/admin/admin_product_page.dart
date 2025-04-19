@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
+import 'package:ecommerce_app/respository/components/app_styles.dart';
 import 'package:ecommerce_app/respository/components/route_names.dart';
 import 'package:ecommerce_app/utils/formatter.dart';
 import 'package:ecommerce_app/view/admin/admin_edit_product_page.dart';
@@ -16,6 +15,8 @@ class AdminProductScreen extends StatefulWidget {
 class _AdminProductScreenState extends State<AdminProductScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> products = [];
+  List<Map<String, dynamic>> _filteredProducts = [];
+  String searchQuery = "";
 
   @override
   void initState() {
@@ -30,31 +31,20 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
       products = querySnapshot.docs
           .map((doc) => {'id': doc.id, ...doc.data() as Map<String, dynamic>})
           .toList();
+      _filteredProducts = products;
     });
   }
 
-  Future<String?> uploadImageToCloudinary(String filePath) async {
-    const String cloudName = "dgfmiwien";
-    const String uploadPreset = "sneakers";
-
-    try {
-      File file = File(filePath);
-      FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(file.path),
-        "upload_preset": uploadPreset,
-      });
-
-      Response response = await Dio().post(
-        "https://api.cloudinary.com/v1_1/$cloudName/image/upload",
-        data: formData,
-        options: Options(headers: {"Content-Type": "multipart/form-data"}),
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        return response.data["secure_url"] as String?;
-      }
-    } catch (_) {}
-    return null;
+  void _filterProducts(String query) {
+    setState(() {
+      searchQuery = query;
+      _filteredProducts = products
+          .where((product) => product['productname']
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    });
   }
 
   Future<void> addOrUpdateProduct(
@@ -76,8 +66,6 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
     try {
       await firestore.collection('products').doc(id).delete();
       fetchProducts();
-
-      // Hiển thị thông báo thành công
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Xóa sản phẩm thành công!"),
@@ -97,39 +85,135 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
   }
 
   Future<void> confirmDeleteProduct(String id) async {
-    bool? confirm = await showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Xác nhận xóa"),
-        content: Text("Bạn có chắc chắn muốn xóa sản phẩm này không?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text("Hủy"),
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) {
+        return Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.red.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 15,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                    size: 36,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Xác nhận xóa',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Bạn có chắc chắn muốn xóa sản phẩm này không?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Hủy',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        deleteProduct(id);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Xóa',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            child: Text("Xóa", style: TextStyle(color: Colors.red)),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: anim1,
+            curve: Curves.easeOutBack,
           ),
-        ],
-      ),
+          child: FadeTransition(
+            opacity: anim1,
+            child: child,
+          ),
+        );
+      },
     );
-
-    if (confirm == true) {
-      deleteProduct(id);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
           "Quản Lý Sản Phẩm",
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
         automaticallyImplyLeading: false,
         actions: [
@@ -137,58 +221,187 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
             onPressed: () {
               Navigator.pushNamed(context, RouteNames.loginScreen);
             },
-            icon: Icon(
-              Icons.logout,
-              color: Colors.red,
-            ),
+            icon: const Icon(Icons.logout, color: Colors.red, size: 26),
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: products.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: products.length + 1,
-              itemBuilder: (context, index) {
-                if (index == products.length) {
-                  return SizedBox(
-                    height: 70,
-                  );
-                }
-                final product = products[index];
-
-                return Card(
-                  margin: EdgeInsets.all(8),
-                  child: ListTile(
-                    leading: Image.network(
-                      product['imagelink'],
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.contain,
-                    ),
-                    title: Text(product['productname']),
-                    subtitle: Text(
-                        "Giá: ${Formatter.formatCurrency(double.parse(product['productprice']).toInt())}"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: TextField(
+              onChanged: _filterProducts,
+              decoration: InputDecoration(
+                hintText: 'Tìm kiếm sản phẩm...',
+                hintStyle: TextStyle(
+                  color: const Color.fromARGB(255, 171, 171, 171),
+                  fontSize: 15,
+                ),
+                prefixIcon: Icon(Icons.search, color: const Color.fromARGB(255, 48, 131, 255), size: 22),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: _filteredProducts.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () => addOrUpdateProduct(
-                              id: product['id'], product: product),
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          size: 64,
+                          color: Colors.grey[400],
                         ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => confirmDeleteProduct(product['id']),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Không tìm thấy sản phẩm nào!",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _filteredProducts.length,
+                    itemBuilder: (context, index) {
+                      final product = _filteredProducts[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white,
+                              Colors.grey.shade50,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.all(12),
+                            leading: Container(
+                              width: 70,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.grey[100],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(
+                                  product['imagelink'],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              product['productname'],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            subtitle: Text(
+                              Formatter.formatCurrency(
+                                  double.parse(product['productprice']).toInt()),
+                              style: TextStyle(
+                                color: AppColor.backgroundColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.edit, size: 20),
+                                  ),
+                                  onPressed: () => addOrUpdateProduct(
+                                      id: product['id'], product: product),
+                                ),
+                                IconButton(
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  onPressed: () =>
+                                      confirmDeleteProduct(product['id']),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+          ),
+        ],
+      ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColor.backgroundColor, Colors.blue],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColor.backgroundColor.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => addOrUpdateProduct(),
-        child: Icon(Icons.add),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () => addOrUpdateProduct(),
+          child: const Icon(Icons.add, color: Colors.white,),
+          backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+          elevation: 0,
+        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ class BrandList extends StatefulWidget {
 
 class _BrandListState extends State<BrandList> {
   List<Map<String, dynamic>> brands = [];
+  String selectedBrand = ''; // Thêm dòng này
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _BrandListState extends State<BrandList> {
 
       setState(() {
         brands = loadedBrands;
+        selectedBrand = 'Puma'; // Mặc định chọn Nike
       });
     } catch (_) {}
   }
@@ -41,15 +43,17 @@ class _BrandListState extends State<BrandList> {
   @override
   Widget build(BuildContext context) {
     return brands.isEmpty
-        ? const Center(
-            child:
-                CircularProgressIndicator()) // Hiển thị loading nếu chưa tải xong
+        ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
+              
               children: brands.map((brand) {
                 return InkWell(
                   onTap: () {
+                    setState(() {
+                      selectedBrand = brand['name'];
+                    });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -66,9 +70,10 @@ class _BrandListState extends State<BrandList> {
                       height: 48,
                       width: 120,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12)),
+                        color: selectedBrand == brand['name'] 
+                            ? Colors.blue 
+                            : Colors.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(12)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,10 +82,12 @@ class _BrandListState extends State<BrandList> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
                               brand['name'],
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 12,
-                                color: Colors.black,
+                                color: selectedBrand == brand['name'] 
+                                    ? Colors.white 
+                                    : Colors.black,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

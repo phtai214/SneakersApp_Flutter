@@ -109,38 +109,55 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              userData['image'] == null
-                                  ? const CircleAvatar(
-                                      radius: 96,
-                                      child: Icon(
-                                        Icons.person,
-                                      ),
-                                    )
+                               Padding(
+                                  padding: const EdgeInsets.only(bottom: 4, right: 6), // thêm padding để tăng kích thước
+                                  child: userData['image'] == null
+                                    ? const CircleAvatar(
+                                        radius: 49,
+                                        child: Icon(
+                                          Icons.person,
+                                        ),
+                                      )
                                   : CircleAvatar(
                                       backgroundImage:
                                           NetworkImage(userData['image']),
-                                      radius: 96,
+                                      radius: 49,
                                     ),
+                          ),
                               const SizedBox(
                                 height: 20,
                               ),
                               userData['Full name'] == null
-                                  ? Container()
-                                  : Text(
+                                ? Container()
+                                : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Xin chào,👋',
+                                      style: const TextStyle(
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
                                       userData['Full name'].toString(),
                                       style: const TextStyle(
-                                          fontFamily: 'Raleway-Medium',
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    )
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                             ],
                           ),
                         );
                       }),
 
                   const SizedBox(
-                    height: 20,
+                    height: 10
                   ),
                   ListTile(
                     textColor: const Color(0xffFFFFFF),
@@ -150,7 +167,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       ),
                       color: Color(0xffFFFFFF),
                     ),
-                    title: const Text('Profile'),
+                    title: const Text('Hồ Sơ'),
                     onTap: () {
                       Navigator.pushNamed(context, RouteNames.profilescreen);
                     },
@@ -164,7 +181,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       ),
                       color: Color(0xffFFFFFF),
                     ),
-                    title: const Text('My Cart'),
+                    title: const Text('Giỏ Hàng'),
                     onTap: () {
                       Navigator.pushNamed(context, RouteNames.cartscreen);
                     },
@@ -178,7 +195,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       ),
                       color: Color(0xffFFFFFF),
                     ),
-                    title: const Text('Favourites'),
+                    title: const Text('Yêu thích '),
                     onTap: () {
                       Navigator.pushNamed(context, RouteNames.favcreen);
                     },
@@ -192,7 +209,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       ),
                       color: Color(0xffFFFFFF),
                     ),
-                    title: const Text('Orders'),
+                    title: const Text('Đơn hàng'),
                     onTap: () {
                       Navigator.pushNamed(context, RouteNames.orderSreen);
                     },
@@ -206,26 +223,26 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       ),
                       color: Color(0xffFFFFFF),
                     ),
-                    title: const Text('Notifications'),
+                    title: const Text('Thông Báo'),
                     onTap: () {
                       Navigator.pushNamed(
                           context, RouteNames.notificationscreen);
                     },
                   ),
                   //5
-                  ListTile(
-                    textColor: const Color(0xffFFFFFF),
-                    leading: const Image(
-                      image: AssetImage(
-                        'images/settings.png',
-                      ),
-                      color: Color(0xffFFFFFF),
-                    ),
-                    title: const Text(
-                      'Settings',
-                    ),
-                    onTap: () {},
-                  ),
+                  // ListTile(
+                  //   textColor: const Color(0xffFFFFFF),
+                  //   leading: const Image(
+                  //     image: AssetImage(
+                  //       'images/settings.png',
+                  //     ),
+                  //     color: Color(0xffFFFFFF),
+                  //   ),
+                  //   title: const Text(
+                  //     'Settings',
+                  //   ),
+                  //   onTap: () {},
+                  // ),
                   const Divider(),
                   ListTile(
                     textColor: const Color(0xffFFFFFF),
@@ -236,7 +253,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                       color: Color(0xffFFFFFF),
                     ),
                     title: const Text(
-                      'Sign Out',
+                      'Đăng Xuất',
                     ),
                     onTap: () async {
                       await favprovider.deleteItems();

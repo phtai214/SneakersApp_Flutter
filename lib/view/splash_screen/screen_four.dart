@@ -23,7 +23,7 @@ class ScreenFour extends StatelessWidget {
                   children: [
                     Center(
                         child: Text(
-                      "You Have the",
+                      "Bắt kịp xu hướng",
                       style: TextStyle(
                           fontFamily: 'Raleway-Bold',
                           fontSize: 34,
@@ -34,7 +34,7 @@ class ScreenFour extends StatelessWidget {
                     )),
                     Center(
                         child: Text(
-                      "Power To",
+                      "giày mới nhất",
                       style: TextStyle(
                           fontFamily: 'Raleway-Bold',
                           fontSize: 34,
@@ -52,7 +52,7 @@ class ScreenFour extends StatelessWidget {
                   children: [
                     Center(
                         child: Text(
-                      "There Are Many Beautiful And Attractive",
+                      "Nhiều mẫu giày đẹp và cuốn hút",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
@@ -63,7 +63,7 @@ class ScreenFour extends StatelessWidget {
                     )),
                     Center(
                         child: Text(
-                      "Plants To Your Room",
+                      " cho bạn tha hồ chọn lựa 👟🔥",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
@@ -132,7 +132,7 @@ class ScreenFour extends StatelessWidget {
                     onpress: () {
                       Navigator.pushNamed(context, RouteNames.loginScreen);
                     },
-                    title: 'Next'),
+                    title: 'Tiếp theo'),
               ),
             ],
           )),

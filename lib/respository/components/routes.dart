@@ -14,6 +14,7 @@ import 'package:ecommerce_app/view/home/order_history_screen.dart';
 import 'package:ecommerce_app/view/home/profile.dart';
 import 'package:ecommerce_app/view/home/show_all_products.dart';
 import 'package:ecommerce_app/view/splash_screen/page_view.dart';
+import 'package:ecommerce_app/view/splash_screen/screen_four.dart';
 import 'package:ecommerce_app/view/splash_screen/screen_one.dart';
 import 'package:ecommerce_app/view/splash_screen/screen_three.dart';
 import 'package:ecommerce_app/view/splash_screen/screentwo.dart';
@@ -33,6 +34,10 @@ class Routes {
       case RouteNames.screenThree:
         return MaterialPageRoute(
             builder: (BuildContext context) => const ScreenThree());
+
+       case RouteNames.screenFour:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const ScreenFour());
 
       case RouteNames.pageViewScreen:
         return MaterialPageRoute(

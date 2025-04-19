@@ -81,7 +81,7 @@ class ProductList {
   static List<Map<String, dynamic>> items = [
     {
       'productId': '0',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Jordan',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe1_mcdii1.png',
@@ -89,11 +89,11 @@ class ProductList {
       'unitprice': '350',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Jordan sneakers offer a stylish look, durable materials, and exceptional comfort for all-day wear.'
+          'Giày thể thao Nike Jordan có kiểu dáng thời trang, chất liệu bền và cực kỳ thoải mái khi mang cả ngày.'
     },
     {
       'productId': '1',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Air Max',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe2_tut1d1.png',
@@ -101,11 +101,11 @@ class ProductList {
       'unitprice': '752',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Air Max features advanced cushioning, breathable mesh, and a sleek design for superior everyday performance.'
+          'Nike Air Max có đệm tiên tiến, lưới thoáng khí và thiết kế đẹp mắt mang lại hiệu suất vượt trội hàng ngày.'
     },
     {
       'productId': '2',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Air Force',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225351/sneakers/shoe3_y1qwvq.png',
@@ -113,11 +113,11 @@ class ProductList {
       'unitprice': '799',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Classic Nike Air Force sneakers with high-quality leather, durable sole, and timeless design for any outfit.'
+          'Giày thể thao Nike Air Force cổ điển với chất liệu da cao cấp, đế bền và thiết kế vượt thời gian phù hợp với mọi trang phục.'
     },
     {
       'productId': '3',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Blazer',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe4_xhx05u.png',
@@ -125,11 +125,11 @@ class ProductList {
       'unitprice': '350',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Blazer provides a retro-inspired look, lightweight comfort, and excellent support for casual or active wear.'
+          'Nike Blazer mang đến vẻ ngoài lấy cảm hứng từ phong cách cổ điển, thoải mái, nhẹ nhàng và hỗ trợ tuyệt vời cho trang phục thường ngày hoặc trang phục năng động.'
     },
     {
       'productId': '4',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Air Jordan 4',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe5_qwqghr.png',
@@ -137,11 +137,11 @@ class ProductList {
       'unitprice': '804',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Air Jordan 4 combines premium materials, bold design, and superior comfort for an outstanding sneaker experience.'
+          'Nike Air Jordan 4 kết hợp giữa chất liệu cao cấp, thiết kế táo bạo và sự thoải mái vượt trội để mang đến trải nghiệm giày thể thao tuyệt vời.'
     },
     {
       'productId': '5',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Air Waffle',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe6_nrd6ps.png',
@@ -149,11 +149,11 @@ class ProductList {
       'unitprice': '420',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Air Waffle features a breathable upper, cushioned midsole, and durable outsole for all-day walking comfort.'
+          'Nike Air Waffle có phần trên thoáng khí, đế giữa có đệm và đế ngoài bền bỉ mang lại sự thoải mái khi đi bộ cả ngày.'
     },
     {
       'productId': '6',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Air Jordan',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe7_p87j0h.png',
@@ -161,11 +161,11 @@ class ProductList {
       'unitprice': '210',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Air Jordan sneakers bring sporty elegance, superior comfort, and top-notch performance for basketball enthusiasts.'
+          'Giày thể thao Nike Air Jordan mang đến sự thanh lịch thể thao, sự thoải mái vượt trội và hiệu suất hàng đầu cho những người đam mê bóng rổ.'
     },
     {
       'productId': '7',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Blazer Mid',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225352/sneakers/shoe8_alookg.png',
@@ -173,11 +173,11 @@ class ProductList {
       'unitprice': '304',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Blazer Mid combines vintage design, excellent ankle support, and durable materials for a stylish urban look.'
+          'Nike Blazer Mid kết hợp thiết kế cổ điển, khả năng hỗ trợ mắt cá chân tuyệt vời và chất liệu bền bỉ để mang đến vẻ ngoài thành thị sành điệu.'
     },
     {
       'productId': '8',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike Dunk Low',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225353/sneakers/shoe9_geolqw.png',
@@ -185,11 +185,11 @@ class ProductList {
       'unitprice': '804',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike Dunk Low delivers a fashionable silhouette, premium leather upper, and soft cushioning for ultimate comfort.'
+          'Nike Dunk Low mang đến kiểu dáng thời trang, phần trên bằng da cao cấp và đệm mềm mại mang lại sự thoải mái tối ưu.'
     },
     {
       'productId': '9',
-      'title': 'Best Seller',
+      'title': 'Bán chạy',
       'productname': 'Nike 804',
       'imagelink':
           'https://res.cloudinary.com/dgfmiwien/image/upload/v1742225353/sneakers/shoe10_mjqgj5.png',
@@ -197,7 +197,7 @@ class ProductList {
       'unitprice': '820',
       'brandId': 's17AsqoNOREUMOKnD73E',
       'description':
-          'Nike 804 sneakers offer a lightweight feel, modern design, and superior grip for an enhanced walking experience.'
+          'Giày thể thao Nike 804 mang lại cảm giác nhẹ, thiết kế hiện đại và độ bám tuyệt vời giúp nâng cao trải nghiệm đi bộ.'
     },
   ];
 }

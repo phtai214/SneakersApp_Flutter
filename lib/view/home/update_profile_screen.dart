@@ -21,255 +21,322 @@ class UpdateProfileScreen extends StatefulWidget {
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
 }
 
-class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> with SingleTickerProviderStateMixin {
   late TextEditingController emailcontroller;
   late TextEditingController nameController;
   final db = FirebaseFirestore.instance.collection("User Data");
   final id = FirebaseAuth.instance.currentUser!.uid;
 
-  @override
-  void initState() {
-    emailcontroller = TextEditingController(text: widget.email);
-    nameController = TextEditingController(text: widget.name);
-    super.initState();
-  }
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
-  void dispose() {
-    super.dispose();
-    emailcontroller.dispose();
-    nameController.dispose();
+  void initState() {
+    super.initState();
+    emailcontroller = TextEditingController(text: widget.email);
+    nameController = TextEditingController(text: widget.name);
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _animationController.forward();
+  }
+
+  void _showSuccessDialog() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, anim1, anim2) {
+        return Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.green.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 15,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                    size: 48,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Cập nhật thành công!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Thông tin của bạn đã được cập nhật',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: anim1,
+            curve: Curves.elasticOut,
+          ),
+          child: FadeTransition(
+            opacity: anim1,
+            child: child,
+          ),
+        );
+      },
+    );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(context, RouteNames.navbarscreen);
+    });
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {bool enabled = true}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        enabled: enabled,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          contentPadding: const EdgeInsets.all(20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenheight = MediaQuery.of(context).size.height;
-    double screenwidth = MediaQuery.of(context).size.width;
     final utilsProvider = Provider.of<GeneralUtils>(context, listen: true);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, RouteNames.navbarscreen);
-          },
-          child: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-          ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Hồ sơ',
+          'Cập nhật hồ sơ',
           style: TextStyle(
-            fontFamily: 'Raleway-SemiBold',
-            color: Color(0xff2B2B2B),
             fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
         ),
         centerTitle: true,
       ),
-      drawer: null,
-      endDrawer: null,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            StreamBuilder(
-                stream: db.doc(id).snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  dynamic userData = snapshot.data?.data();
+      body: StreamBuilder(
+        stream: db.doc(id).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                        child: CircularProgressIndicator(
-                      color: AppColor.backgroundColor,
-                    ));
-                  } else if (snapshot.hasError) {
-                    const Center(
-                      child: Text("Error Occured"),
-                    );
-                  }
+          dynamic userData = snapshot.data?.data();
 
-                  return Padding(
-                    padding: EdgeInsets.only(top: screenheight * 0.05),
-                    child: Column(
-                      children: [
-                        userData!['image'].toString().isEmpty
-                            ? Container(
-                                height: 100,
-                                width: 100,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                    'images/profile.png',
-                                  )),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  color: Colors.grey,
-                                ),
-                              )
-                            : Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                height: 105,
-                                width: 105,
-                                child: ClipOval(
-                                  child: Image.network(
-                                    userData!['image'],
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                        InkWell(
-                          onTap: () async {
-                            await utilsProvider.getgalleryimage();
-                            await utilsProvider.uploadimage();
-                            await utilsProvider.uploadtoFirestore().onError(
-                                  (error, stackTrace) => {
-                                    debugPrint(error.toString()),
-                                    GeneralUtils().showerrorflushbar(
-                                        error.toString(), context)
-                                  },
-                                );
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(top: screenheight * 0.03),
-                            child: const Center(
-                              child: Text(
-                                'Thay đổi ảnh hồ sơ',
-                                style: TextStyle(
-                                  fontFamily: 'Raleway-SemiBold',
-                                  color: AppColor.backgroundColor,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: screenheight * 0.02,
-                                left: screenwidth * 0.05),
-                            child: const Text(
-                              'Tên của bạn',
-                              style: TextStyling.formtextstyle,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: screenwidth * 0.04,
-                              right: screenwidth * 0.04,
-                              top: screenheight * 0.01),
-                          child: TextFormField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              labelStyle: TextStyling.hinttext,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              filled: true,
-                              fillColor: const Color(0xffF7F7F9),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: screenheight * 0.02,
-                                left: screenwidth * 0.05),
-                            child: const Text(
-                              'Email',
-                              style: TextStyling.formtextstyle,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: screenwidth * 0.04,
-                              right: screenwidth * 0.04,
-                              top: screenheight * 0.01),
-                          child: TextFormField(
-                            controller: emailcontroller,
-                            decoration: InputDecoration(
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              labelStyle: TextStyling.hinttext,
-                              filled: true,
-                              fillColor: const Color(0xffF7F7F9),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: screenheight * 0.02,
-                                left: screenwidth * 0.05),
-                            child: const Text(
-                              'Mật khẩu',
-                              style: TextStyling.formtextstyle,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: screenwidth * 0.04,
-                              right: screenwidth * 0.04,
-                              top: screenheight * 0.01),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              label: const Text('*********'),
-                              labelStyle: TextStyling.hinttext,
-                              filled: true,
-                              fillColor: const Color(0xffF7F7F9),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
+          return SingleChildScrollView(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(30),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
                         ),
                       ],
                     ),
-                  );
-                }),
-            SizedBox(
-              height: screenheight * 0.025,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30),
+                        Stack(
+                          children: [
+                            Hero(
+                              tag: 'profile_image',
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColor.backgroundColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundColor: Colors.grey[200],
+                                  backgroundImage: userData?['image']?.toString().isNotEmpty == true
+                                      ? NetworkImage(userData['image'])
+                                      : const AssetImage('images/profile.png') as ImageProvider,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await utilsProvider.getgalleryimage();
+                                  await utilsProvider.uploadimage();
+                                  await utilsProvider.uploadtoFirestore();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.backgroundColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Cập nhật ảnh đại diện',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColor.backgroundColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  _buildTextField('Họ và tên', nameController),
+                  _buildTextField('Email', emailcontroller),
+                  _buildTextField('Mật khẩu', TextEditingController(text: '********'), enabled: false),
+                  const SizedBox(height: 30),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (emailcontroller.text.isNotEmpty && nameController.text.isNotEmpty) {
+                          utilsProvider.showloading(true);
+                          await db.doc(id).update({
+                            'Email': emailcontroller.text,
+                            'Full name': nameController.text
+                          });
+                          utilsProvider.showloading(false);
+                          _showSuccessDialog();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.backgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: utilsProvider.load
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Cập nhật',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
-            RoundButtonTwo(
-              loading: utilsProvider.load,
-              onpress: () {
-                if (emailcontroller.text.isNotEmpty &&
-                    nameController.text.isNotEmpty) {
-                  utilsProvider.showloading(true);
-
-                  db.doc(id).update({
-                    'Email': emailcontroller.text.toString(),
-                    'Full name': nameController.text.toString()
-                  }).then((value) => {
-                        utilsProvider.showloading(false),
-                        GeneralUtils()
-                            .showsuccessflushbar('Profile Updated!', context)
-                      });
-                }
-              },
-              title: 'Submit',
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    emailcontroller.dispose();
+    nameController.dispose();
+    super.dispose();
   }
 }
