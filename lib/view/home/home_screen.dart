@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_shopping_cart/persistent_shopping_cart.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -69,14 +70,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-  void _showAnniversaryPromotion() {
+  void _showAnniversaryPromotion() async {
+    // Check if banner has been shown before
+    final prefs = await SharedPreferences.getInstance();
+    final hasShownBanner = prefs.getBool('has_shown_30_4_banner_2025') ?? false;
+    
+    if (hasShownBanner) return;
+
+    // Mark banner as shown
+    await prefs.setBool('has_shown_30_4_banner_2025', true);
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         // Auto dismiss after 8 seconds
         Future.delayed(const Duration(seconds: 8), () {
-          Navigator.of(context).pop();
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
         });
 
         return Dialog(

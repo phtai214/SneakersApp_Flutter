@@ -36,6 +36,11 @@ class _AdminOrderListScreenState extends State<AdminOrderListScreen>
     super.dispose();
   }
 
+  String _formatDateTime(DateTime date) {
+    String pad(int n) => n.toString().padLeft(2, '0');
+    return '${pad(date.hour)}:${pad(date.minute)} - ${pad(date.day)}/${pad(date.month)}/${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,6 +212,25 @@ class _AdminOrderListScreenState extends State<AdminOrderListScreen>
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.access_time,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        _formatDateTime((orderData['timestamp'] as Timestamp).toDate()),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[600],
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
                                   Text(
                                     "Đơn hàng: ${orderData['orderId']}",
                                     style: const TextStyle(

@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
 
+  String _formatDateTime(DateTime date) {
+    String pad(int n) => n.toString().padLeft(2, '0');
+    return '${pad(date.hour)}:${pad(date.minute)} - ${pad(date.day)}/${pad(date.month)}/${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -95,12 +100,23 @@ class OrderHistoryScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              '${orderDate.day}/${orderDate.month}/${orderDate.year}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _formatDateTime(orderDate),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
                             const Spacer(),
                             Container(
@@ -240,47 +256,6 @@ class OrderHistoryScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // const SizedBox(height: 2),
-                // Row(
-                //   children: [
-                //     Container(
-                //       padding: const EdgeInsets.all(8),
-                //       decoration: BoxDecoration(
-                //         color: Colors.grey[50],
-                //         borderRadius: BorderRadius.circular(8),
-                //       ),
-                //       // child: Row(
-                //       //   mainAxisSize: MainAxisSize.min,
-                //       //   children: [
-                //       //     Icon(
-                //       //       Icons.shopping_bag_outlined,
-                //       //       size: 16,
-                //       //       color: Colors.grey[600],
-                //       //     ),
-                //       //     const SizedBox(width: 4),
-                //       //     Text(
-                //       //       Formatter.formatCurrency(item['unitPrice'].toInt()),
-                //       //       style: TextStyle(
-                //       //         fontSize: 14,
-                //       //         fontWeight: FontWeight.w600,
-                //       //         color: Colors.grey[800],
-                //       //       ),
-                //       //     ),
-                //       //   ],
-                //       // ),
-                //     ),
-                //     // const Spacer(),
-                //     // Text(
-                //     //   Formatter.formatCurrency(
-                //     //       (item['quantity'] * item['unitPrice']).toInt()),
-                //     //   style: const TextStyle(
-                //     //     fontSize: 16,
-                //     //     fontWeight: FontWeight.bold,
-                //     //     color: Colors.blue,
-                //     //   ),
-                //     // ),
-                //   ],
-                // ),
                 if (item['productDetails'] != null) ...[
                   const SizedBox(height: 12),
                   Wrap(
